@@ -1,7 +1,7 @@
 import React from "react";
 import {motion} from "framer-motion"
 
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/SideBar";
 import Chat from "../components/Chat";
 
 

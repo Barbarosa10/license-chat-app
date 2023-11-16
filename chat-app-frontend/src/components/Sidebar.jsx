@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import Searchbar from './Searchbar';
 import Conversations from './Conversations';
 
-const Sidebar = () => {
+const SideBar = () => {
     return(
         <div className='sidebar'>
             <Navbar/>
@@ -13,4 +13,4 @@ const Sidebar = () => {
     )
 }
 
-export default Sidebar
+export default SideBar

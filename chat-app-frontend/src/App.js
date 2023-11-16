@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
+import {ToastContainer} from "react-toastify"
 
 import "./style.scss"
 
@@ -12,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-          <Route path="" element={<Navigate to="/login"/>}/>
+          <Route path="" element={<Navigate to="/home"/>}/>
           <Route path="Home" element={<Home/>}/>
           <Route path="Login" element={<Login/>}/>
           <Route path="Register" element={<Register/>}/>
