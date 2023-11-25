@@ -2,21 +2,16 @@ const mongoose = require("mongoose");
 
 const conversationSchema = mongoose.Schema(
   {
-    sender: {
-        type: String,
-        ref: "users",
-        required: true,
+    participants: {
+      type: Array,
+      ref: "users",
+      required: true,
+      min: 2,
+      max:2
     },
 
-    receiver: {
-        type: String,
-        ref: "users",
-        required: true,
-    },
-
-    timestamp: {
-        type: String,
-        required: true,
+    lastMessage: {
+      type: String
     }
   }
 );

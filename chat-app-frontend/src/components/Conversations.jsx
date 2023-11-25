@@ -1,89 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
-const Conversations = () => {
+const Conversations = ({conversations}) => {
+    // console.log(conversations);
+
     return(
+
         <div className='conversations'>
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-            
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
-            <div className='userConversation'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <div className='userConversationInfo'>
-                    <span>Duciuc Danut</span>
-                    <p>Hello world!</p>
-                </div>
-            </div>
-
+            {conversations.map((conversation, index) => {
+                return (
+                    <div key={index} className='userConversation'>
+                        <img src={`data:image/;base64,${conversation.avatarImage}`} alt="" />
+                        <div className='userConversationInfo'>
+                            <span>{conversation.username}</span>
+                            <p>{conversation.message}</p>
+                        </div>
+                    </div>
+                )
+            })};
         </div>
+            //  {/* <div className='userConversation'>
+            // //     <img src={`data:image/svg+xml;base64,${contact.avatarImage}`} alt="" />
+            // //     <div className='userConversationInfo'>
+            // //         <span>{contact.username}</span>
+            // //         <p>Hello world!</p>
+            // //     </div>
+            // // </div>
+
+        
     )
 }
 

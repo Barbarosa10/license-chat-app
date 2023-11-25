@@ -13,7 +13,7 @@ const Chat = () => {
                     <img src={Camera} alt=""/>
                 </div>
             </div>
-            <Videos/>
+            {/* <Videos/> */}
             <Messages/>
             <Input/>
         </div>

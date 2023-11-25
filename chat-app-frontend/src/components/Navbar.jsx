@@ -8,23 +8,31 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const logout = () => {
-        localStorage.clear(localhost_key)
+        localStorage.clear(localhost_key);
         navigate("/login");
     }
+    const userData = JSON.parse(localStorage.getItem(localhost_key));
+    if (userData) {
+        const currentUser = userData.user;
+        return(
 
-    return(
-        <div className='navbar'>
-            <div className='logo'>
-                <span>Chat App</span>
-            </div>
+            <div className='navbar'>
+                <div className='logo'>
+                    <span>Chat App</span>
+                </div>
 
-            <div className='user'>
-                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" />
-                <span>Duciuc Danut</span>
-                <button onClick={logout}>Logout</button>
+                <div className='user'>
+                    <img src={`data:image/;base64,${currentUser.avatarImage}`} alt="" />
+                    <span>{currentUser.username}</span>
+                    <button onClick={logout}>Logout</button>
+                </div>
             </div>
-        </div>
-    )
+            
+        )
+    }
+    else{
+        navigate("/login");
+    }
 }
 
 export default Navbar

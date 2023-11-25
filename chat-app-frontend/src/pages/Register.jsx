@@ -13,6 +13,12 @@ export default function Register (){
     const [msg, setMsg] = useState(null);
     
     useEffect(() => {
+        if (localStorage.getItem(localhost_key)) {
+          navigate("/");
+        }
+      }, []);
+
+    useEffect(() => {
         return () => {
           setMsg(null);
         };
@@ -116,7 +122,7 @@ export default function Register (){
                         
                     </form>
                     <div className="responseMessage">
-                            {loading==false && msg}
+                            {loading===false && msg}
                             {loading && "Uploading and compressing the image please wait..."}
                         </div>
 

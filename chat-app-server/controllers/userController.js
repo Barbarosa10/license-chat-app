@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Conversation = require("../models/conversationModel");
 const bcrypt = require("bcrypt");
 
 
@@ -55,19 +56,48 @@ module.exports.register = async (req, res, next) => {
   }
 };
 
-// module.exports.getAllUsers = async (req, res, next) => {
-//   try {
-//     const users = await User.find({ _id: { $ne: req.params.id } }).select([
-//       "email",
-//       "username",
-//       "avatarImage",
-//       "_id",
-//     ]);
-//     return res.json(users);
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
+module.exports.getAllContacts = async (req, res, next) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+      "email",
+      "username",
+      "avatarImage",
+      "_id",
+    ]);
+    return res.json(users);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.getAllConversations = async (req, res, next) => {
+  console.log(req.params.username);
+  try {
+    const conversations = await Conversation.find({ 
+      participants: { $in: [req.params.username] } 
+    }).select([
+      "participants",
+      "lastMessage",
+      "_id",
+    ]);
+    return res.json(conversations);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.getContact = async (req, res, next) => {
+  console.log(req.params.username);
+  try {
+    const user = await User.find({ username: req.params.username  }).select([
+      "avatarImage",
+      "_id",
+    ]);
+    return res.json(user);
+  } catch (ex) {
+    next(ex);
+  }
+};
 
 // module.exports.setAvatar = async (req, res, next) => {
 //   try {

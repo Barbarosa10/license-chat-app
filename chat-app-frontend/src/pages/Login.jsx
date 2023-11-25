@@ -2,20 +2,21 @@ import React, { useState, useEffect} from "react";
 import {motion} from "framer-motion"
 import { loginRoute } from "../utils/ApiRoute";
 import axios from "axios"
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 const localhost_key = "chat-app-current-user"
 
 
 
 const Login = () => {
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (localStorage.getItem(localhost_key)) {
           navigate("/");
         }
       }, []);
 
-    const navigate = useNavigate();
     const [msg, setMsg] = useState(null);
     
     useEffect(() => {
