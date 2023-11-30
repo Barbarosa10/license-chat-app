@@ -5,12 +5,14 @@ import { useChat } from "../context/ChatContext";
 import { useUser } from "../context/UserContext";
 import { useMessages } from "../context/MessageContext";
 import axios from "axios";
+import {useConversation} from "../context/ConversationContext";
 
 
 const Messages = ({socket}) => {
     // const [messages, setMessages] = useState([]);
     const {messages, setMessagesAtInitialization, addMessage} = useMessages();
-
+    const { updateConversation } = useConversation();
+    const { currentUser} = useUser();
     const { data } = useChat();
 
     useEffect(() => {   
@@ -33,23 +35,39 @@ const Messages = ({socket}) => {
         fetchMessages();
     }, [data.chatId]);
 
-    useEffect(() => {
-        if (socket.current) {
-            console.log("Socket is available")
-            console.log(socket.current);
-          socket.current.on("msg-receive", (msg) => {
-            console.log(msg);
-            addMessage(
-                {
-                    "message": msg.message,
-                    "sender": msg.from,
-                    "conversationId": msg.chatId,
-                    "timestamp": Date.now()
-                }
-            )
-          });
-        }
-      }, [socket.current]);
+    // useEffect(() => {
+    //     if (socket.current) {
+    //         console.log("Socket is available")
+
+    //         const handleReceiveMessage = (msg) => {
+    //             console.log(msg);
+    //             addMessage({
+    //               "message": msg.message,
+    //               "sender": msg.from,
+    //               "conversationId": msg.chatId,
+    //               "timestamp": Date.now()
+    //             });
+    //             const updatedConversation = {
+    //                 "_id": msg.chatId,
+    //                 "participants": [msg.fromUsername, currentUser.username],
+    //                 "lastMessage": msg.message,
+    //                 "timestamp": Date.now(),
+    //                 "__v": {
+    //                     "$numberInt": "0"
+    //                   }
+    //             };
+    //             updateConversation(updatedConversation);
+    //         };
+    //         // console.log(socket.current);
+    //       socket.current.on("msg-receive", handleReceiveMessage);
+    //       return () => {
+    //         console.log("Component unmounted. Removing event listener.");
+    //         socket.current.off("msg-receive", handleReceiveMessage);
+    //       };
+    //     }
+    //   }, [socket.current, addMessage]);
+
+
 
     return(
         <div className='messages'>

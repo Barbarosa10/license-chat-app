@@ -9,7 +9,7 @@ import {MessageProvider} from "../context/MessageContext";
 
 const Chat = ({socket}) => {
     const { data } = useChat();
-    console.log(data?.user);
+    // console.log(data?.user);
 
     return(
         <div className='chat'>
@@ -20,10 +20,10 @@ const Chat = ({socket}) => {
                 </div>
             </div>
             {/* <Videos/> */}
-            <MessageProvider>
+            {/* <MessageProvider> */}
                 <Messages socket={socket}/> 
                 <Input socket={socket}/>
-            </MessageProvider>
+            {/* </MessageProvider> */}
         </div>
     )
 }

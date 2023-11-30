@@ -12,7 +12,7 @@ const Input = ({socket}) => {
     const { currentUser, setCurrentUser } = useUser();
     const { data } = useChat();
     const {messages, addMessage} = useMessages();
-    const { conversations, setConversationsAtInitialization } = useConversation();
+    const { conversations, updateConversation } = useConversation();
 
 
 
@@ -23,12 +23,24 @@ const Input = ({socket}) => {
     //   }, [currentUser]);
 
     const handleSend = async () => {
-        socket.current.emit("send-msg", {
+        const data_to_send = {
             to: data.user._id,
             from: currentUser._id,
+            fromUsername: currentUser.username,
             message: text,
             chatId: data.chatId
-        });
+        }
+        console.log(data_to_send);
+        socket.current.emit("send-msg", data_to_send);
+        const updatedConversation = {
+            "id": data.chatId,
+            "_id": data.user._id,
+            "username": data.user.username,
+            "participants": [data.user.username, currentUser.username],
+            "lastMessage": text,
+            "timestamp": Date.now()
+        };
+        updateConversation(updatedConversation);
 
         const message = await axios.post(sendMessageRoute, {
             conversationId: data.chatId,
@@ -43,6 +55,7 @@ const Input = ({socket}) => {
             lastMessage: text
         })
         // console.log(conversation.data);
+        // updateConversation(conversation.data);
         setText("");
     }
 

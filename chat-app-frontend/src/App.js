@@ -14,23 +14,25 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 
 function App() {
   return (
-    <UserProvider>
-      <ConversationProvider>
-        <ChatContextProvider>
-          <BrowserRouter>
-            <Routes>
-                <Route path="" element={<Navigate to="/home"/>}/>
-                <Route path="Home" element={<Home/>}/>
-                <Route path="Login" element={<Login/>}/>
-                <Route path="Register" element={<Register/>}/>
-                <Route path="ForgotPassword" element={<ForgotPassword/>}/>
-                <Route path="ChangePassword" element={<ChangePassword/>}/>
 
-            </Routes>
+          <BrowserRouter>
+            <UserProvider>
+              <ConversationProvider>
+                <ChatContextProvider>
+                  <Routes>
+                      <Route path="" element={<Navigate to="/home"/>}/>
+                      <Route path="Home" element={<Home/>}/>
+                      <Route path="Login" element={<Login/>}/>
+                      <Route path="Register" element={<Register/>}/>
+                      <Route path="ForgotPassword" element={<ForgotPassword/>}/>
+                      <Route path="ChangePassword" element={<ChangePassword/>}/>
+
+                  </Routes>
+                </ChatContextProvider>
+              </ConversationProvider>
+            </UserProvider>
           </BrowserRouter>
-        </ChatContextProvider>
-      </ConversationProvider>
-    </UserProvider>
+
   );
 }
 

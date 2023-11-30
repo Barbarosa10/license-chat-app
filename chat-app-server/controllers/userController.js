@@ -42,15 +42,15 @@ module.exports.register = async (req, res, next) => {
       return res.json({ msg: "Select a valid avatar image", status: false });
     }
 
-    const savedUser = await User.create({
+    const user = await User.create({
       email,
       username,
       password: hashedPassword,
       avatarImage
     });
 
-    delete savedUser.password;
-    return res.json({ status: true, savedUser });
+    delete user.password;
+    return res.json({ status: true, user });
   } catch (ex) {
     next(ex);
   }
@@ -130,7 +130,7 @@ module.exports.updateLastMessage = async (req, res, next) => {
     };
 
     const result = await Conversation.updateOne({_id: conversationId}, updatedLastMessage)
-
+    // console.log(result);
     return res.json(result);
   } catch (ex) {
     next(ex);

@@ -1,19 +1,20 @@
 import React from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLoaderData } from "react-router-dom";
+import {useUser} from "../context/UserContext";
 import profileImage from "../images/addAvatar.png";
 
 const localhost_key = "chat-app-current-user"
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { currentUser} = useUser();
 
     const logout = () => {
         localStorage.clear(localhost_key);
         navigate("/login");
     }
-    const userData = JSON.parse(localStorage.getItem(localhost_key));
-    if (userData) {
-        const currentUser = userData.user;
+    // const userData = JSON.parse(localStorage.getItem(localhost_key));
+    if (currentUser) {
         return(
 
             <div className='navbar'>
@@ -30,9 +31,9 @@ const Navbar = () => {
             
         )
     }
-    else{
-        navigate("/login");
-    }
+    // else{
+    //     navigate("/login");
+    // }
 }
 
 export default Navbar

@@ -3,14 +3,17 @@ import {useUser} from "../context/UserContext";
 import {useConversation} from "../context/ConversationContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useChat } from "../context/ChatContext";
+import { useMessages } from "../context/MessageContext";
 import axios from "axios";
 import { allContactsRoute, allConversationsRoute, contactRoute, host } from "../utils/ApiRoute";
 
-const Conversations = () => {
+const Conversations = ({socket}) => {
     const navigate = useNavigate();
     const { currentUser} = useUser();
-    const { conversations, setConversationsAtInitialization } = useConversation();
+    const { conversations, setConversationsAtInitialization, updateConversation } = useConversation();
     const { dispatch, selectChat } = useChat();
+    const {messages, setMessagesAtInitialization, addMessage} = useMessages();
+    const { data } = useChat();
     useEffect(() => {
 
         const fetchConversations = async() => {
@@ -21,7 +24,7 @@ const Conversations = () => {
                 // console.log(response);
                 const conversations = await Promise.all(response.data.map(async (element) => {
                   const conversation = {};
-                  conversation.message = element.lastMessage;
+                  conversation.lastMessage = element.lastMessage;
                   const participant = element.participants.find(username => username !== currentUser.username);
                   
                   if (participant) {
@@ -59,6 +62,53 @@ const Conversations = () => {
         }
     }, [currentUser]);
 
+    useEffect(() => {
+        if (socket.current) {
+            console.log("Socket is available")
+
+            const handleReceiveMessage = (msg) => {
+                console.log(msg);
+                if(data.user._id === msg.from){
+                    addMessage({
+                        "message": msg.message,
+                        "sender": msg.from,
+                        "conversationId": msg.chatId,
+                        "timestamp": Date.now()
+                      });
+                }
+                
+                const setConversation = async() => {
+                    const updatedConversation = {
+                        "id": msg.chatId,
+                        "_id": msg.from,
+                        "username": msg.fromUsername,
+                        "participants": [msg.fromUsername, currentUser.username],
+                        "lastMessage": msg.message,
+                        "timestamp": Date.now()
+
+                    };
+                    try {
+                        const contact = await axios.get(`${contactRoute}/${msg.fromUsername}`);
+                        if (contact.data[0]) {
+                          updatedConversation.avatarImage = contact.data[0].avatarImage;
+                        }
+                      } catch (error) {
+                        console.error('Error fetching contact data:', error);
+                      }
+                    updateConversation(updatedConversation);
+                }
+                setConversation();
+
+            };
+            // console.log(socket.current);
+          socket.current.on("msg-receive", handleReceiveMessage);
+          return () => {
+            console.log("Component unmounted. Removing event listener.");
+            socket.current.off("msg-receive", handleReceiveMessage);
+          };
+        }
+      }, [socket.current, addMessage]);
+
     const handleSelect = (u) => {
         selectChat()
         dispatch({ type: "CHANGE_USER", user: u });
@@ -75,6 +125,7 @@ const Conversations = () => {
                         <img src={`data:image/;base64,${conversation.avatarImage}`} alt="" />
                         <div className='userConversationInfo'>
                             <span>{conversation.username}</span>
+                            {/* {console.log(conversation.lastMessage)} */}
                             <p>{conversation.lastMessage}</p>
                         </div>
                     </div>

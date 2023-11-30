@@ -5,7 +5,7 @@ import {motion} from "framer-motion"
 import axios from "axios"
 import { registerRoute } from "../utils/ApiRoute";
 import {useUser} from "../context/UserContext";
-const localhost_key = "chat-app-current-user"
+const localhost_key = "chat-app-current-user";
 
 export default function Register (){
     const { currentUser, setCurrentUser } = useUser();
@@ -85,11 +85,13 @@ export default function Register (){
                     if(data.status === false){
                         setMsg(data.msg);
                     } else if(data.status === true){
-                        setCurrentUser(JSON.stringify(data.user));
+                        setCurrentUser(data.user);
                         localStorage.setItem(
                             localhost_key,
                             JSON.stringify(data)
                         );
+                        console.log(data.user);
+                        console.log(currentUser);
                         navigate("/");
                     }
                 }

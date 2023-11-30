@@ -11,6 +11,7 @@ import Sidebar from "../components/SideBar";
 import Chat from "../components/Chat";
 import Welcome from "../components/Welcome";
 import { io } from "socket.io-client";
+import {MessageProvider} from "../context/MessageContext";
 
 
 const localhost_key = "chat-app-current-user"
@@ -27,6 +28,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchData = () => {
+          // console.log(currentUser);
           if (!localStorage.getItem(localhost_key)) {
             navigate("/login");
           }
@@ -157,12 +159,14 @@ const Home = () => {
     return(
         <motion.div initial={{x: -100, opacity: 0 }} animate={{x: 0, opacity: 1 }} transition={{ duration: 1}} className="home">
             <div className="container">
-              <Sidebar/>
-              {!chatSelected ? (
-                <Welcome />
-              ) : (
-                <Chat socket={socket}/>
-              )}
+              <MessageProvider>
+                <Sidebar socket={socket}/>
+                {!chatSelected ? (
+                  <Welcome />
+                ) : (
+                  <Chat socket={socket}/>
+                )}
+              </MessageProvider>
 
             </div>
         </motion.div>

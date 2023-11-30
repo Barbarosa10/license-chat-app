@@ -5,7 +5,7 @@ import axios from "axios"
 import { useNavigate} from "react-router-dom";
 import {useUser} from "../context/UserContext";
 
-const localhost_key = "chat-app-current-user"
+const localhost_key = "chat-app-current-user";
 
 
 
@@ -52,7 +52,7 @@ const Login = () => {
                     password
                 }
                 );
-                console.log(response);
+                // console.log(response);
 
                 if(response){
                     let data = response.data;

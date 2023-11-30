@@ -70,12 +70,13 @@ const Searchbar = () => {
                 const conversation = {};
                 conversation.message = response.data.lastMessage;
                 conversation.username = response.data.participants.find(username => username !== currentUser.username);
-                conversation._id = response.data._id;
+                conversation.id = response.data._id;
                 conversation.timestamp = response.data.timestamp;
                 try {
                     const contact = await axios.get(`${contactRoute}/${conversation.username}`);
                     if (contact.data[0]) {
                       conversation.avatarImage = contact.data[0].avatarImage;
+                      conversation._id = contact.data[0]._id;
                     }
                   } catch (error) {
                     console.error('Error fetching contact data:', error);

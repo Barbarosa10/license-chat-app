@@ -31,7 +31,7 @@ const Message = ({message}) => {
                         } 
                     alt="" 
                 />
-                <span>Just now</span>
+                {/* <span>Just now</span> */}
             </div>
             <div className='messageContent'>
                 <p>{message.message}</p>

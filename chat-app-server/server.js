@@ -41,23 +41,16 @@ const io = socket(server, {
 });
 
 global.onlineUsers = new Map();
-console.log(onlineUsers['654f9984b467538aadfe94b9'])
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
-    console.log(userId);
-    // if(onlineUsers.get(userId) == undefined){
       onlineUsers.set(userId, socket.id);
-    // }
-    console.log(onlineUsers);
   });
   socket.on("send-msg", (data) => {
-
+    console.log(data);
     const sendUserSocket = onlineUsers.get(data.to);
-    console.log(data.to);
-    console.log(sendUserSocket);
     if (sendUserSocket) {
-      console.log(data);
+      console.log("ADA");
       socket.to(sendUserSocket).emit("msg-receive", data);
     }
   });
