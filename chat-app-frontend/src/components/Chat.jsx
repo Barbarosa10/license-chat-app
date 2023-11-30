@@ -4,18 +4,26 @@ import Input from './Input'
 import Videos from './Videos'
 import Camera from '../images/camera.png'
 
-const Chat = () => {
+import { useChat } from "../context/ChatContext";
+import {MessageProvider} from "../context/MessageContext";
+
+const Chat = ({socket}) => {
+    const { data } = useChat();
+    console.log(data?.user);
+
     return(
         <div className='chat'>
             <div className='chatInfo'>
-                <span>Duciuc Danut</span>
+                <span>{data.user?.username}</span>
                 <div className="chatCallButton">
                     <img src={Camera} alt=""/>
                 </div>
             </div>
             {/* <Videos/> */}
-            <Messages/>
-            <Input/>
+            <MessageProvider>
+                <Messages socket={socket}/> 
+                <Input socket={socket}/>
+            </MessageProvider>
         </div>
     )
 }

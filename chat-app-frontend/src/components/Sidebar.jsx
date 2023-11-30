@@ -3,14 +3,15 @@ import Navbar from "./Navbar";
 import Searchbar from './Searchbar';
 import Conversations from './Conversations';
 
-const SideBar = ({conversations}) => {
+const SideBar = () => {
 
 
     return(
         <div className='sidebar'>
             <Navbar/>
             <Searchbar/>
-            <Conversations conversations={conversations}/>
+            <Conversations/>
+            {/* <Conversations conversations={conversations}/> */}
         </div>
     )
 }

@@ -24,10 +24,10 @@ module.exports.register = async (req, res, next) => {
 
     const { username, email, password, avatarImage} = req.body;
 
-    console.log(username);
-    console.log(email);
-    console.log(password);
-    console.log(avatarImage);
+    // console.log(username);
+    // console.log(email);
+    // console.log(password);
+    // console.log(avatarImage);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -71,7 +71,7 @@ module.exports.getAllContacts = async (req, res, next) => {
 };
 
 module.exports.getAllConversations = async (req, res, next) => {
-  console.log(req.params.username);
+  // console.log(req.params.username);
   try {
     const conversations = await Conversation.find({ 
       participants: { $in: [req.params.username] } 
@@ -79,6 +79,7 @@ module.exports.getAllConversations = async (req, res, next) => {
       "participants",
       "lastMessage",
       "_id",
+      "timestamp"
     ]);
     return res.json(conversations);
   } catch (ex) {
@@ -87,13 +88,50 @@ module.exports.getAllConversations = async (req, res, next) => {
 };
 
 module.exports.getContact = async (req, res, next) => {
-  console.log(req.params.username);
+  // console.log(req.params.username);
   try {
     const user = await User.find({ username: req.params.username  }).select([
       "avatarImage",
       "_id",
+      "username"
     ]);
     return res.json(user);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+
+module.exports.createConversation = async (req, res, next) => {
+  const {participants} = req.body;
+  const lastMessage = "";
+  try {
+    const newConversation = new Conversation({
+      participants,
+      lastMessage
+    });
+    // console.log(newConversation);
+    const savedConversation = await newConversation.save();
+    return res.json(savedConversation);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.updateLastMessage = async (req, res, next) => {
+  const {lastMessage, conversationId} = req.body;
+
+  try {
+    const updatedLastMessage = {
+      $set: {
+        lastMessage,
+        timestamp: Date.now(),
+      },
+    };
+
+    const result = await Conversation.updateOne({_id: conversationId}, updatedLastMessage)
+
+    return res.json(result);
   } catch (ex) {
     next(ex);
   }

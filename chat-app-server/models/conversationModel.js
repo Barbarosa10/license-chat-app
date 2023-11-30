@@ -4,14 +4,19 @@ const conversationSchema = mongoose.Schema(
   {
     participants: {
       type: Array,
-      ref: "users",
       required: true,
       min: 2,
       max:2
     },
 
     lastMessage: {
-      type: String
+      type: String,
+      default: "",
+    },
+    
+    timestamp: {
+      type: Date,
+      default: Date.now
     }
   }
 );

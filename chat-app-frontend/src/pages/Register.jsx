@@ -4,9 +4,11 @@ import Add from "../images/addAvatar.png"
 import {motion} from "framer-motion"
 import axios from "axios"
 import { registerRoute } from "../utils/ApiRoute";
+import {useUser} from "../context/UserContext";
 const localhost_key = "chat-app-current-user"
 
 export default function Register (){
+    const { currentUser, setCurrentUser } = useUser();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(null);
@@ -83,6 +85,7 @@ export default function Register (){
                     if(data.status === false){
                         setMsg(data.msg);
                     } else if(data.status === true){
+                        setCurrentUser(JSON.stringify(data.user));
                         localStorage.setItem(
                             localhost_key,
                             JSON.stringify(data)

@@ -3,16 +3,19 @@ import {motion} from "framer-motion"
 import { loginRoute } from "../utils/ApiRoute";
 import axios from "axios"
 import { useNavigate} from "react-router-dom";
+import {useUser} from "../context/UserContext";
 
 const localhost_key = "chat-app-current-user"
 
 
 
 const Login = () => {
+    const { currentUser, setCurrentUser } = useUser();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (localStorage.getItem(localhost_key)) {
+        // if(currentUser){
           navigate("/");
         }
       }, []);
@@ -57,6 +60,7 @@ const Login = () => {
                     if(data.status === false){
                         setMsg(data.msg);
                     } else if(data.status === true){
+                        setCurrentUser(data.user);
                         localStorage.setItem(
                             localhost_key,
                             JSON.stringify(data)
