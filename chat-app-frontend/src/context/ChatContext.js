@@ -19,7 +19,7 @@ import {
     const chatReducer = (state, action) => {
       switch (action.type) {
         case "CHANGE_USER":
-        //   console.log(action.user);
+          console.log(action.user);
           return {
             user: action.user,
             chatId: action.user.id,

@@ -42,10 +42,12 @@ const io = socket(server, {
 
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
+
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
       onlineUsers.set(userId, socket.id);
   });
+
   socket.on("send-msg", (data) => {
     console.log(data);
     const sendUserSocket = onlineUsers.get(data.to);
@@ -54,4 +56,21 @@ io.on("connection", (socket) => {
       socket.to(sendUserSocket).emit("msg-receive", data);
     }
   });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("callEnded");
+  });
+
+  socket.on("callUser", (data) => {
+    console.log(" " + data.from + " " + data.signalData);
+    const sendUserSocket = onlineUsers.get(data.userToCall);
+    // console.log(data.signalData);
+    socket.to(sendUserSocket).emit("callUser", {chatId: data.chatId, lastMessage: data.lastMessage, timestamp: data.timestamp, signal: data.signalData, from: data.from, username: data.username});
+  });
+
+  socket.on("answerCall", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    socket.to(sendUserSocket).emit("callAccepted", data.signal);
+  });
+  
 });

@@ -6,15 +6,16 @@ import { useUser } from "../context/UserContext";
 import { useMessages } from "../context/MessageContext";
 import axios from "axios";
 import {useConversation} from "../context/ConversationContext";
+import { useVideoCall } from '../context/VideoCallContext';
 
 
 const Messages = ({socket}) => {
     // const [messages, setMessages] = useState([]);
+    const {calling} = useVideoCall();
     const {messages, setMessagesAtInitialization, addMessage} = useMessages();
     const { updateConversation } = useConversation();
     const { currentUser} = useUser();
     const { data } = useChat();
-
     useEffect(() => {   
         const fetchMessages = async() => {
 
@@ -67,29 +68,21 @@ const Messages = ({socket}) => {
     //     }
     //   }, [socket.current, addMessage]);
 
-
-
     return(
-        <div className='messages'>
-            {messages.map((m, index) => {
-                return(<Message key={index} message={m}/>)
-                
-            })}
-            {/* <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/> */}
-        
-        </div>
+
+        calling === false ? (
+            <div className='messages' style={{ height: 'calc(100% - 130px)' }} >
+              {messages.map((m, index) => {
+                return <Message key={index} message={m} />;
+              })}
+            </div>
+          ) : (
+            <div className='messages'>
+              {messages.map((m, index) => {
+                return <Message key={index} message={m} />;
+              })}
+            </div>
+          )
     )
 }
 

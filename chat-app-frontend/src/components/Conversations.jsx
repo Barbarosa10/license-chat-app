@@ -11,9 +11,8 @@ const Conversations = ({socket}) => {
     const navigate = useNavigate();
     const { currentUser} = useUser();
     const { conversations, setConversationsAtInitialization, updateConversation } = useConversation();
-    const { dispatch, selectChat } = useChat();
+    const { data, dispatch, selectChat } = useChat();
     const {messages, setMessagesAtInitialization, addMessage} = useMessages();
-    const { data } = useChat();
     useEffect(() => {
 
         const fetchConversations = async() => {
