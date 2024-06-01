@@ -23,3 +23,25 @@ yarn-debug.log*
 yarn-error.log*
 
 **/__pycache__/
+
+**/images
+**/chat.txt
+**/saved_weights_sentiment_chat12.pt
+**/test.py
+**/prepare_data.py
+**/text.py
+**/text_processor.py
+**/bertarchitecture.py
+**/CNN_model_1.pt
+**/CNN_model_2.pt
+**/CNN_model_3.pt
+**/CNN_model_4.pt
+**/CNN_model_5.pt
+**/CNN_model_6.pt
+**/CNN_model_7.pt
+**/CNN_model_8.pt
+**/CNN_model_9.pt
+**/p1.jpg
+**/p2.jpg
+**/p3.jpg
+**/script.py

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import Messages from './Messages'
 import Input from './Input'
 import Videos from './Videos'
@@ -7,23 +7,42 @@ import Camera from '../images/camera.png'
 import {useUser} from "../context/UserContext";
 import { useChat } from "../context/ChatContext";
 import { useVideoCall } from '../context/VideoCallContext';
-import {MessageProvider} from "../context/MessageContext";
+import { host } from "../utils/ApiRoute";
+import { io } from "socket.io-client";
+import { useSocket } from "../context/SocketContext";
 
 import Peer from "simple-peer";
 
 const Chat = ({socket}) => {
     const { currentUser } = useUser();
     const { data } = useChat();
-    const {calling, setCalling, myVideo, callAccepted, stream, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef} = useVideoCall();
+    const {calling, setCalling, stream, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef, destroyConnection, closeCamera, setCallEnded} = useVideoCall();
     // console.log(data?.user);
     const [dummyState, setDummyState] = useState(0);
+    const { socketv, setSocket } = useSocket();
+    const sk = useRef();
+    // let socketv = useRef();
+    // socketv = socketvv;
+    // let peer;
 
     // Manually trigger a re-render
     const triggerRerender = () => {
       setDummyState((prev) => prev + 1);
     };
+    const requestToOpenSocket = () => {
+        const data_to_send = {
+            to: data.user._id,
+            from: currentUser._id,
+            chatId: data.chatId
+        }
+        socket.current.emit("open-socket", data_to_send);
 
+        socket.current.on("socket-opened", (data) => {
+            callUser();
+        });
+    }
 	const callUser = () => {
+        triggerRerender();
         setCalling(true);
          navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             console.log(stream);
@@ -32,13 +51,24 @@ const Chat = ({socket}) => {
             // myVideo.current.srcObject = stream;
             console.log("YAAA");
             console.log(stream);
+            // destroyConnection();
+            
+            sk.current = io(host);
+            setSocket(sk);
+            sk.current.emit("add-user-video", currentUser._id);
+            // , {  query: {
+            //     userId: currentUser._id
+            //   }});
+            
             const peer = new Peer({
                 initiator: true,
                 trickle: false,
+
                 stream: stream
             });
+            peer._debug = console.log;
             peer.on("signal", (signalData) => {
-                socket.current.emit("callUser", {
+                sk.current.emit("callUser", {
                     userToCall: data.user._id,
                     chatId: data.chatId,
                     lastMessage: data.user.lastMessage,
@@ -49,13 +79,27 @@ const Chat = ({socket}) => {
                 });
             });
             peer.on("stream", (stream) => { 
+                console.log("TRRRRRRTRTR");
                 setUserVideo(stream);
                 triggerRerender();
             });
-            socket.current.on("callAccepted", (signal) => {
+            sk.current.on("callAccepted", (signal) => {
+                console.log(peer);
                 setCallAccepted(true);
+                setCallEnded(false);
                 peer.signal(signal);
+                
             });
+            sk.current.on("callEnded", (data) => {
+                console.log("disconnecteddddddd");
+                console.log(data);
+                destroyConnection();
+                closeCamera();
+                // setStream(null);
+                setCalling(false);
+
+              });
+            // peer.on('close', () => { console.log('peer closed'); peer.destroy(); });
     
             setConnectionRef(peer);
         })
@@ -69,12 +113,12 @@ const Chat = ({socket}) => {
                 {console.log(data.user)}
                 <span>{data.user?.username}</span>
                 <div className="chatCallButton">
-                    <img src={Camera} onClick={callUser} alt=""/>
+                    <img src={Camera} onClick={requestToOpenSocket} alt=""/>
                 </div>
             </div>
 
             {/* <MessageProvider> */}
-                <Videos/>
+                {stream && <Videos socket={socketv}/>}
                 <Messages socket={socket}/> 
                 <Input socket={socket}/>
             {/* </MessageProvider> */}

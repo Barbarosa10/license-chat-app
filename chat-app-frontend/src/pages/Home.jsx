@@ -14,8 +14,12 @@ import Welcome from "../components/Welcome";
 import CallPopup from "../components/CallPopup";
 import { io } from "socket.io-client";
 import {MessageProvider} from "../context/MessageContext";
+import { useSocket } from "../context/SocketContext";
 
 import Peer from "simple-peer";
+import PopupResponse from "../components/PopupResponse";
+import { usePopup } from '../context/PopupContext';
+
 
 const localhost_key = "chat-app-current-user"
 
@@ -23,49 +27,101 @@ const Home = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useUser();
     const { chatSelected, dispatch, selectChat } = useChat();
-    const {userVideo, receivingCall, setStream, setMyVideo, stream, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo } = useVideoCall();
-    // const [showPopup, setShowPopup] = useState(true);
-    // const connectionRef= useRef()
+    const { userVideo, receivingCall, setStream, closeCamera, setMyVideo, stream, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection } = useVideoCall();
+    const { socketv, setSocket } = useSocket();
+    const {showPopup, message} = usePopup();
+
     const socket = useRef();
+
     const [user, setUser] = useState(null);
 
-    const [dummyState, setDummyState] = useState(0);
 
-    // Manually trigger a re-render
+    const [dummyState, setDummyState] = useState(0);
+    const sk = useRef();
+
     const triggerRerender = () => {
       setDummyState((prev) => prev + 1);
     };
 
-    // const [currentUser, setCurrentUser] = useState(undefined);
-
-
     useEffect(() => {
       socket.current = io(host);
-        const fetchData = () => {
-          // console.log(currentUser);
-          if (!localStorage.getItem(localhost_key)) {
-            navigate("/login");
-          }
-          else {
-            try {
-              const userData = JSON.parse(localStorage.getItem(localhost_key));
-              if(currentUser != userData){
-                setCurrentUser(userData.user);
-              // console.log(currentUser);
+      console.log(socket);
 
-              }
-            } catch (error) {
-              console.error('Error parsing user data:', error);
+      socket.current.on("open-socket", (data) => {
+        console.log(data);
+        sk.current = io(host); 
+        console.log(sk);
+        setSocket(sk);
+
+        sk.current.emit("add-user-video", data.to);
+        console.log(socketv);
+
+
+        sk.current.on("callUser", (data) => {
+          console.log("calwaser");
+          console.log(data);
+          const buildUser = async() => {
+            console.log("USER:")
+            console.log(currentUser);
+            if(currentUser){
+              const avatarImage = await getAvatarImage(data.username);
+              setUser({
+                "id": data.chatId,
+                "_id": data.from,
+                "username": data.username,
+                "participants": [data.username, currentUser.username],
+                "lastMessage": data.lastMessage,
+                "timestamp": data.timestamp,
+                avatarImage: avatarImage
+              });
+              
+              console.log(user);
+  
+              setCaller(data.from);
+              setUsername(data.username);
+              setCallerSignal(data.signal);
+              console.log("AUUUUUUUUUUU");
+              setReceivingCall(true);
             }
           }
+          buildUser();
+        });
+        socket.current.emit("socket-opened", {chatId: data.chatId, to: data.from, from: data.to});
+        
+      });
+      console.log(currentUser);
+      if (currentUser) {
+        socket.current.emit("add-user", currentUser._id);
+        console.log(socket);
+      }
+
+    }, [currentUser]);
+
+    useEffect(() => {
+
+
+      const fetchData = () => {
+        // console.log(currentUser);
+        if (!localStorage.getItem(localhost_key)) {
+          navigate("/login");
+        }
+        else {
+          try {
+            const userData = JSON.parse(localStorage.getItem(localhost_key));
+            if(currentUser != userData){
+              setCurrentUser(userData.user);
+            // console.log(currentUser);
+
+            }
+          } catch (error) {
+            console.error('Error parsing user data:', error);
+          }
+        }
       };
       fetchData();
-
-      // setMyVideo();
-
-
-
     }, []);
+
+    
 
     const getAvatarImage = async(username) => {
       try {
@@ -80,50 +136,25 @@ const Home = () => {
       }
     }
 
-    useEffect(() => {
-      socket.current.on("callUser", (data) => {
-        const buildUser = async() => {
-          if(currentUser){
-            const avatarImage = await getAvatarImage(data.username);
-            setUser({
-              "id": data.chatId,
-              "_id": data.from,
-              "username": data.username,
-              "participants": [data.username, currentUser.username],
-              "lastMessage": data.lastMessage,
-              "timestamp": data.timestamp,
-              avatarImage: avatarImage
-            });
-            
-            console.log(user);
-
-            setCaller(data.from);
-            setUsername(data.username);
-            setCallerSignal(data.signal);
-            setReceivingCall(true);
-          }
-        }
-        buildUser();
-
-
-      });  
-    }, [socket.current]);
 
     const answerCall =() =>  {
+      triggerRerender();
       setCallAccepted(true);
       setCalling(true);
       navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((stream) => {
           console.log(stream);
           setStream(stream);
           setMyVideo(stream);
-          // myVideo.current.srcObject = stream;
+
+          console.log(socketv);
           const peer = new Peer({
             initiator: false,
             trickle: false,
             stream: stream
-          })
+          });
+          peer._debug = console.log;
           peer.on("signal", (data) => {
-            socket.current.emit("answerCall", { signal: data, to: caller });
+            socketv.current.emit("answerCall", { signal: data, to: caller });
           })
           peer.on("stream", (stream) => {
             console.log("uservideooooo    ");
@@ -131,10 +162,20 @@ const Home = () => {
             setUserVideo(stream);
             triggerRerender();
           })
-          // console.log(callerSignal);
+
+          console.log(peer);
           peer.signal(callerSignal);
-          // connectionRef.current = peer;
+          
           setConnectionRef(peer);
+
+          socketv.current.on("callEnded", (data) => {
+            console.log("disconnecteddddddd");
+            console.log(data);
+            closeCamera();
+            setStream(null);
+            setCalling(false);
+            destroyConnection();
+          });
     
           console.log(user);
           if(user){
@@ -144,10 +185,6 @@ const Home = () => {
           setReceivingCall(false);
       })
 
-
-
-    
-
     }
   
     const declineCall = () => {
@@ -155,13 +192,7 @@ const Home = () => {
     }
 
 
-    useEffect(() => {
-      console.log(currentUser);
-      if (currentUser) {
-        // setMe(currentUser._id);
-        socket.current.emit("add-user", currentUser._id);
-      }
-    }, [currentUser]);
+
 
     return(
         <motion.div initial={{x: -100, opacity: 0 }} animate={{x: 0, opacity: 1 }} transition={{ duration: 1}} className="home">
@@ -181,6 +212,9 @@ const Home = () => {
               </MessageProvider>
 
             </div>
+            {showPopup ? (
+                   <PopupResponse message={message} />
+                ) : null}
         </motion.div>
     )
 

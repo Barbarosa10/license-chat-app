@@ -1,6 +1,8 @@
 $backgroundColor: black;
-$containerColor: #b04d07;
-$lightContainerColor: darkorange;
+$containerColor: #C19A6B;
+$lightContainerColor: #DAA06D;
+// $containerColor: #b04d07;
+// $lightContainerColor: darkorange;
 
 html, body{
     margin: 0;
@@ -113,7 +115,18 @@ html, body{
     height: 100svh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;   
+    
+    .popup {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
 
     .container{
         border: 1px solid black;
@@ -268,7 +281,7 @@ html, body{
                 font-weight: bold;
                 height: 40px;
                 padding: 10px;
-                background-color: #b04d07;
+                background-color: #C19A6B;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -367,7 +380,7 @@ html, body{
                             align-items: flex-end;
 
                             p{
-                                background-color: darkorange;
+                                background-color: #DAA06D;
                                 padding: 10px;
                                 border-radius: 10px 0px 10px 10px;
                                 max-width: max-content;

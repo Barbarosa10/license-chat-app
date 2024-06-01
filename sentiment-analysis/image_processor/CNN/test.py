@@ -15,8 +15,6 @@ def image_to_base64(image_path):
         base64_encoded_image = base64.b64encode(img_data).decode('utf-8')
         return base64_encoded_image
 
-
-
 def base64_to_gray_image(base64_encoded_image_data):
     # Decode base64 image data
     binary_image_data = base64.b64decode(base64_encoded_image_data)
@@ -55,10 +53,10 @@ def preprocess_image(image):
 
     return normalized_image
 
-# Example usage
-image_path = "happy4.jpg"  # Path to your image file
+# # Example usage
+image_path = "p3.jpg"  # Path to your image file
 base64_image = image_to_base64(image_path)
-# print(base64_image)
+print(base64_image)
 
 # Example usage
 base64_encoded_image_data = base64_image  # Your base64 encoded image data
@@ -96,4 +94,35 @@ for image in preprocessed_faces:
     plt.imshow(image[0], cmap='gray')  # Assuming images are grayscale
     plt.show()
 
+
+# def Get_sentiment_for_image(base64_encoded_image_data):
+#     gray_image = base64_to_gray_image(base64_encoded_image_data)
+#     faces = crop_face(gray_image)
+
+#     label_mapping = {0: "Negative", 1: "Positive"} 
+
+#     # Preprocess each face
+#     preprocessed_faces = [preprocess_image(face) for face in faces]
+    
+#     for image in preprocessed_faces:
+
+
+#         image_tensor = torch.tensor(image / 255.0, dtype=torch.float32)
+#         image_tensor = image_tensor.view(image_tensor.shape[0], 1, image_tensor.shape[2], image_tensor.shape[1])
+        
+#         model = CNNArchitecture(28, 28)
+#         model.load_state_dict(torch.load('CNN_model_6.pt', map_location=torch.device('cpu')))
+#         # model.eval()
+#         # Forward pass
+#         with torch.no_grad():
+#             output = model(image_tensor)
+#         print(f'output: {output}')
+#         probabilities = torch.softmax(output, dim=1)
+#         print(f'probabilities: {probabilities}')
+#         _, predicted_class = torch.max(probabilities, 1)
+
+#         predicted_label = label_mapping[predicted_class.item()]
+
+
+#         return predicted_label
 

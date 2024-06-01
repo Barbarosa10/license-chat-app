@@ -87,13 +87,13 @@ class BertDataset():
                                                     # add_special_tokens = True,
                                                     max_length = self.optimal_sentence_length)
 
-        # k = 0
-        # print('Training Comments -->>',df['text'][k])
-        # print('\nInput Ids -->>\n',X_train_encoded['input_ids'][k])
-        # print('\nDecoded Ids -->>\n',self.tokenizer.decode(X_train_encoded['input_ids'][k]))
-        # print(self.tokenizer.convert_ids_to_tokens(X_train_encoded['input_ids'][k]))
-        # print('\nAttention Mask -->>\n',X_train_encoded['attention_mask'][k])
-        # print('\nLabels -->>',df['label'][k])
+        k = 0
+        print('Training Comments -->>', train_text.tolist()[k])
+        print('\nInput Ids -->>\n',tokens_train['input_ids'][k])
+        print('\nDecoded Ids -->>\n',self.tokenizer.decode(tokens_train['input_ids'][k]))
+        # print(self.tokenizer.convert_ids_to_tokens(tokens_train['input_ids'][k]))
+        print('\nAttention Mask -->>\n',tokens_train['attention_mask'][k])
+        print('\nLabels -->>',self.df['label'][k])
 
         return tokens_train, tokens_val, tokens_test
 

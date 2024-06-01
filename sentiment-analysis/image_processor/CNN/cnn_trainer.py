@@ -199,7 +199,7 @@ class CNNTrainer:
             #save the best model
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                torch.save(self.model.state_dict(), 'CNN_model_6.pt')
+                torch.save(self.model.state_dict(), 'CNN_model_8.pt')
             
             # append training and validation loss
             train_losses.append(train_loss)

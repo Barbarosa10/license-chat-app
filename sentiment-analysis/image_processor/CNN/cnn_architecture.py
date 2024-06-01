@@ -38,8 +38,11 @@ class CNNArchitecture(nn.Module):
         )
         fcInputSize = 4 * ((imgWidth // 2) // 2) * ((imgHeight // 2) // 2)
         # fcInputSize = 4 * ((imgWidth // 2) ) * ((imgHeight // 2))
+        print(f'fcInpuSize: {fcInputSize}')
         self.linear_layers = nn.Sequential(
-            nn.Linear(fcInputSize, 2),
+            nn.Flatten(),
+            nn.Linear(fcInputSize, 32),
+            nn.Linear(32, 2),
             nn.LogSoftmax(dim=1)
         )
 

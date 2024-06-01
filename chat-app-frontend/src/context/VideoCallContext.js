@@ -4,7 +4,7 @@ const VideoCallContext = createContext();
 
 export const VideoCallProvider = ({ children }) => {
 	const [ me, setMe ] = useState("");
-	const [ stream, setStream ] = useState();
+	let [ stream, setStream ] = useState();
 	const [ receivingCall, setReceivingCall ] = useState(false);
 	const [ caller, setCaller ] = useState("");
 	const [ callerSignal, setCallerSignal ] = useState();
@@ -16,9 +16,7 @@ export const VideoCallProvider = ({ children }) => {
   const myVideo = useRef();
 	const userVideo = useRef();
 	const connectionRef= useRef();
-    // const [myVideo, setMyVideo] = useState();
-	// const [userVideo, setUserVideo] = useState();
-	// const [connectionRef, setConnectionRef] = useState();
+
 
   const setCurrentMe = (me) => {
     setMe(me);
@@ -63,11 +61,37 @@ export const VideoCallProvider = ({ children }) => {
     connectionRef.current = connection;
   };
   const destroyConnection = () => {
-    connectionRef.current.destroy();
+    if(connectionRef && connectionRef.current){
+      connectionRef.current.destroy();
+      connectionRef.current = null;
+    }
+
   };
 
+  const closeCamera = () => {
+    console.log("STREAMMM: ");
+    console.log(stream);
+
+    if (stream) {
+      console.log(stream.getTracks())
+      console.log("STOP TRACKS")
+      // Stop all tracks in the media stream
+      try{
+        stream.getTracks().forEach(track => track.stop());
+        // stream.getTracks().forEach(track => console.log(track));
+      }catch(error){
+        console.log(error);
+      }
+      console.log(stream.getTracks())
+      console.log(stream);
+      // Optionally, clear the reference to the media stream
+      // stream = null;
+    }
+  }
+
   return (
-    <VideoCallContext.Provider value={{ connectionRef, userVideo, myVideo, connectionRef, calling, receivingCall, callerSignal, stream, callAccepted, callEnded, caller,
+    <VideoCallContext.Provider value={{ connectionRef, userVideo, myVideo, calling, receivingCall, callerSignal, stream, callAccepted, callEnded, caller, 
+                                        closeCamera,
                                         destroyConnection,
                                         setCalling: setCurrentCalling,
                                         setCaller: setCurrentCaller,

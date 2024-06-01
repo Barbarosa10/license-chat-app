@@ -105,7 +105,6 @@ const Searchbar = () => {
             {err && <span>User not found!</span>}
             {!err && user && (
                 <div className='userConversation' onClick={handleSelect}>
-                    {/* <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" /> */}
                     <img src={`data:image/;base64,${user.avatarImage}`} alt="" />
                     <div className='userConversationInfo'>
                         <span>{user.username}</span>

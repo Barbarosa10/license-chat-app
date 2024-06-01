@@ -34,8 +34,7 @@ class BertTrainer:
         self.model = self.model.to(self.device)
 
         #define optimizer
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr = 5e-5, weight_decay = 0.01)
-, 
+        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr = 5e-5, weight_decay = 0.01) 
         #compute the class weights to address class imbalance
         class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(self.dataset.train_labels), y=self.dataset.train_labels)
         print(f"Class Weights: {class_weights}")

@@ -3,7 +3,13 @@ from bert_dataset import BertDataset
 from transformers import AutoModel, BertTokenizerFast
 import torch
 
-def Get_sentiment(Review, Tokenizer, Model):
+# Loading the model
+Model = BertArchitecture(AutoModel.from_pretrained('bert-base-uncased'))
+Model.load_state_dict(torch.load('saved_weights_sentiment_chat12.pt', map_location=torch.device('cpu')))
+Tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+
+def Get_sentiment_for_text(Review):
+    global Model, Tokenizer
     # Convert Review to a list if it's not already a list
     if not isinstance(Review, list):
         Review = [Review]
@@ -35,15 +41,13 @@ def Get_sentiment(Review, Tokenizer, Model):
     return predicted_label
 
 
-# Loading the model
-model = BertArchitecture(AutoModel.from_pretrained('bert-base-uncased'))
-model.load_state_dict(torch.load('saved_weights_sentiment_chat12.pt', map_location=torch.device('cpu')))
+
 # print(model)0
 
-tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
-while True :
-    Review = input("Introdu un test pentru a prezice un sentiment: ")
-    # Review ='''My cat died the other day. I will bury her tomorrow!'''
-    # Get_sentiment(Review, tokenizer, model)
-    print(Get_sentiment(Review, tokenizer, model))
+
+# while True :
+#     Review = input("Introdu un test pentru a prezice un sentiment: ")
+#     # Review ='''My cat died the other day. I will bury her tomorrow!'''
+#     # Get_sentiment(Review, tokenizer, model)
+#     print(Get_sentiment_for_text(Review))
