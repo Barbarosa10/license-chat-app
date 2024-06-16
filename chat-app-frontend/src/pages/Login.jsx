@@ -1,21 +1,18 @@
 import React, { useState, useEffect} from "react";
 import {motion} from "framer-motion"
 import { loginRoute } from "../utils/ApiRoute";
-import axios from "axios"
+import axios from '../utils/axiosConfig';
 import { useNavigate} from "react-router-dom";
 import {useUser} from "../context/UserContext";
 
-const localhost_key = "chat-app-current-user";
-
-
+import { jwtDecode} from "jwt-decode";
 
 const Login = () => {
-    const { currentUser, setCurrentUser } = useUser();
+    const { setCurrentUser } = useUser();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (localStorage.getItem(localhost_key)) {
-        // if(currentUser){
+        if (localStorage.getItem('token')) {
           navigate("/");
         }
       }, []);
@@ -52,27 +49,33 @@ const Login = () => {
                     password
                 }
                 );
-                // console.log(response);
 
                 if(response){
                     let data = response.data;
-    
                     if(data.status === false){
                         setMsg(data.msg);
                     } else if(data.status === true){
-                        setCurrentUser(data.user);
+                        localStorage.setItem('token', data.token);
+
+                        delete data['token'];
+                        delete data['status'];
+                        data.avatarImage = data.avatarImage;
+                        data.username = data.username;
+                        setCurrentUser(data);
+
+                        
                         localStorage.setItem(
-                            localhost_key,
+                            process.env.REACT_APP_LOCALHOST_KEY,
                             JSON.stringify(data)
                         );
                         navigate("/");
                     }
                 }
             }catch(error){
-                console.error(error);
+                console.log(error);
+                if(error.response.data.msg != undefined);
+                    setMsg(error.response.data.msg);
             }
-
-
         }
     }
 
@@ -89,9 +92,8 @@ const Login = () => {
                 </form>
                 <div className="responseMessage">
                         {msg}
-                    </div>
+                </div>
                 <div className="linkParagraph">
-                    <p>Forgot password? <a href="forgotPassword">Change Password</a></p>
                     <p>You don't have an account? <a href="register">Register</a></p>
                 </div>
 

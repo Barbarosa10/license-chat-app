@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useChat } from "../context/ChatContext";
 import { useUser } from "../context/UserContext";
 
@@ -6,9 +6,6 @@ import { useUser } from "../context/UserContext";
 const Message = ({message}) => {
     const { currentUser } = useUser();
     const { data } = useChat();
-
-    // console.log(message);
-    // console.log("A0");
 
     const ref = useRef();
 
@@ -31,12 +28,9 @@ const Message = ({message}) => {
                         } 
                     alt="" 
                 />
-                {/* <span>Just now</span> */}
             </div>
             <div className='messageContent'>
                 <p>{message.message}</p>
-                {/* {message.avatarImage && <img src={message.avatarImage} alt="" />} */}
-                {/* <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="" /> */}
             </div>
         </div>        
     )

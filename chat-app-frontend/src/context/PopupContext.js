@@ -1,9 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
-import PopupResponse from "../components/PopupResponse";
-// Create a context for managing the popup state
+
 const PopupContext = createContext();
 
-// Provider component to manage the context state
 export const PopupProvider = ({ children }) => {
   const [message, setMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);

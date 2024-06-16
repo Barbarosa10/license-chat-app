@@ -1,19 +1,35 @@
 import React from 'react';
-import { useNavigate, Link, useLoaderData } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {useUser} from "../context/UserContext";
-import profileImage from "../images/addAvatar.png";
-
-const localhost_key = "chat-app-current-user"
+import { logoutRoute } from "../utils/ApiRoute";
+import { useVideoCall } from "../context/VideoCallContext";
+import axios from '../utils/axiosConfig';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const { currentUser} = useUser();
 
-    const logout = () => {
-        localStorage.clear(localhost_key);
+    const { setStream, closeCamera, setCalling, setReceivingCall, destroyConnection } = useVideoCall();
+
+    const logout = async () => {
+        
+        try{
+            await axios.post(`${logoutRoute}/${currentUser._id}`);
+            localStorage.clear(process.env.REACT_APP_LOCALHOST_KEY);
+            localStorage.clear('token');
+
+            closeCamera();
+            setStream(null);
+            setCalling(false);
+            setReceivingCall(false);
+            destroyConnection();
+        }catch(error){
+            console.error(error);
+        }
+
         navigate("/login");
     }
-    // const userData = JSON.parse(localStorage.getItem(localhost_key));
+
     if (currentUser) {
         return(
 
@@ -28,12 +44,8 @@ const Navbar = () => {
                     <button onClick={logout}>Logout</button>
                 </div>
             </div>
-            
         )
     }
-    // else{
-    //     navigate("/login");
-    // }
 }
 
 export default Navbar

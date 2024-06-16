@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react'
-import axios from "axios";
+import axios from '../utils/axiosConfig';
 import { allConversationsRoute, contactRoute, createConversationRoute } from "../utils/ApiRoute";
 import Conversations from './Conversations';
 import {useUser} from "../context/UserContext";
@@ -13,20 +13,12 @@ const Searchbar = () => {
     const [err, setErr] = useState(false);
     const { currentUser} = useUser();
     const { conversations, addConversation } = useConversation();
-    // let currentUser = null;
-
-    //get Current User
-    // const currentUserData = JSON.parse(localStorage.getItem(localhost_key));
-    // if(currentUserData)
-    //     currentUser = currentUserData.user;
-
 
 
     const handleSearch = async () => {
         const fetchContact = async () => {
             try {
                 const response = await axios.get(`${contactRoute}/${username}`);
-                console.log(response.data);
                 if(response.data[0].length == 0)
                     setErr(true);
                 else
@@ -61,7 +53,6 @@ const Searchbar = () => {
                     }
                 }
             }
-            console.log(conversationExists);
             if(!conversationExists){
                 const response = await axios.post(createConversationRoute, {
                     "participants": [currentUser.username, user.username]
@@ -82,7 +73,6 @@ const Searchbar = () => {
                     console.error('Error fetching contact data:', error);
                 }
                 addConversation(conversation);
-                // console.log(response.data);
             }
             else{
                 console.log("Already exists!")

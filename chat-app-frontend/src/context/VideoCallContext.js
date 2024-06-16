@@ -69,23 +69,17 @@ export const VideoCallProvider = ({ children }) => {
   };
 
   const closeCamera = () => {
-    console.log("STREAMMM: ");
     console.log(stream);
 
     if (stream) {
       console.log(stream.getTracks())
-      console.log("STOP TRACKS")
-      // Stop all tracks in the media stream
       try{
         stream.getTracks().forEach(track => track.stop());
-        // stream.getTracks().forEach(track => console.log(track));
       }catch(error){
         console.log(error);
       }
       console.log(stream.getTracks())
       console.log(stream);
-      // Optionally, clear the reference to the media stream
-      // stream = null;
     }
   }
 

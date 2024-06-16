@@ -11,7 +11,6 @@ const SideBar = ({socket}) => {
             <Navbar/>
             <Searchbar/>
             <Conversations socket={socket}/>
-            {/* <Conversations conversations={conversations}/> */}
         </div>
     )
 }

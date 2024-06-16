@@ -13,9 +13,9 @@ import "./style.scss"
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import { SocketProvider } from "./context/SocketContext";
 
+
 function App() {
   return (
-
           <BrowserRouter>
             <PopupProvider>
               <SocketProvider>
@@ -39,7 +39,6 @@ function App() {
               </SocketProvider>
             </PopupProvider>
           </BrowserRouter>
-
   );
 }
 

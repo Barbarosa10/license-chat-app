@@ -2,20 +2,19 @@ import React, { useState, useEffect} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Add from "../images/addAvatar.png"
 import {motion} from "framer-motion"
-import axios from "axios"
+import axios from '../utils/axiosConfig';
 import { registerRoute } from "../utils/ApiRoute";
 import {useUser} from "../context/UserContext";
-const localhost_key = "chat-app-current-user";
 
 export default function Register (){
-    const { currentUser, setCurrentUser } = useUser();
+    const { setCurrentUser } = useUser();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(null);
     const [msg, setMsg] = useState(null);
     
     useEffect(() => {
-        if (localStorage.getItem(localhost_key)) {
+        if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
           navigate("/");
         }
       }, []);
@@ -26,22 +25,51 @@ export default function Register (){
         };
       }, []);
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
     
+    //     if (file) {
+    //       const reader = new FileReader();
+    
+    //       reader.onload = function (e) {
+    //         const contentBase64 = e.target.result.split(',')[1];
+    //         setSelectedImage(contentBase64);
+    //       };
+    
+    //       reader.readAsDataURL(file);
+    //     }
+    //   };
+
+      const handleImageChange = (e) => {
+        const file = e.target.files[0];
+      
         if (file) {
           const reader = new FileReader();
-    
-          reader.onload = function (e) {
-            const contentBase64 = e.target.result.split(',')[1];
-            setSelectedImage(contentBase64);
-
-
+      
+          reader.onload = function (event) {
+            const img = new Image();
+            img.onload = function () {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+      
+              const scaleFactor = 48 / Math.max(img.width, img.height);
+              canvas.width = img.width * scaleFactor;
+              canvas.height = img.height * scaleFactor;
+      
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
+              const scaledBase64 = canvas.toDataURL('image/jpeg', 0.8); // Adjust quality as needed (0.8 is 80% quality)
+      
+              setSelectedImage(scaledBase64);
+            };
+      
+            img.src = event.target.result;
           };
-    
+      
           reader.readAsDataURL(file);
         }
       };
+      
 
     const handleValidation = (username, email, password) => {
         if (username.length < 3) {
@@ -77,8 +105,6 @@ export default function Register (){
                     avatarImage : selectedImage
                 }
                 );
-                console.log(response);
-
                 if(response){
                     let data = response.data;
     
@@ -87,19 +113,15 @@ export default function Register (){
                     } else if(data.status === true){
                         setCurrentUser(data.user);
                         localStorage.setItem(
-                            localhost_key,
+                            process.env.REACT_APP_LOCALHOST_KEY,
                             JSON.stringify(data)
                         );
-                        console.log(data.user);
-                        console.log(currentUser);
                         navigate("/");
                     }
                 }
             }catch(error){
                 console.error(error);
             }
-
-
         }
 
         setLoading(false);

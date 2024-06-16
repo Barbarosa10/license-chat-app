@@ -1,18 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect } from 'react'
 import {useUser} from "../context/UserContext";
 import {useConversation} from "../context/ConversationContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { useChat } from "../context/ChatContext";
 import { useMessages } from "../context/MessageContext";
-import axios from "axios";
-import { allContactsRoute, allConversationsRoute, contactRoute, host } from "../utils/ApiRoute";
+import axios from '../utils/axiosConfig';
+import { allConversationsRoute, contactRoute } from "../utils/ApiRoute";
 
 const Conversations = ({socket}) => {
     const navigate = useNavigate();
     const { currentUser} = useUser();
     const { conversations, setConversationsAtInitialization, updateConversation } = useConversation();
     const { data, dispatch, selectChat } = useChat();
-    const {messages, setMessagesAtInitialization, addMessage} = useMessages();
+    const { addMessage} = useMessages();
     useEffect(() => {
 
         const fetchConversations = async() => {
@@ -20,7 +20,6 @@ const Conversations = ({socket}) => {
             try{
               if(currentUser){
                 const response = await(axios.get(`${allConversationsRoute}/${currentUser.username}`));
-                // console.log(response);
                 const conversations = await Promise.all(response.data.map(async (element) => {
                   const conversation = {};
                   conversation.lastMessage = element.lastMessage;
@@ -29,7 +28,6 @@ const Conversations = ({socket}) => {
                   if (participant) {
                     conversation.username = participant;
                     conversation.id = element._id;
-                    // console.log(element);
                     conversation.timestamp = element.timestamp;
         
                   
@@ -42,8 +40,7 @@ const Conversations = ({socket}) => {
                     } catch (error) {
                       console.error('Error fetching contact data:', error);
                     }
-                    // console.log(conversation);
-                    // addConversation(conversation);
+
                     return conversation;
                   }
                 }));
@@ -66,7 +63,6 @@ const Conversations = ({socket}) => {
             console.log("Socket is available")
 
             const handleReceiveMessage = (msg) => {
-                console.log(msg);
                 if(data.user._id === msg.from){
                     addMessage({
                         "message": msg.message,
@@ -99,10 +95,8 @@ const Conversations = ({socket}) => {
                 setConversation();
 
             };
-            // console.log(socket.current);
           socket.current.on("msg-receive", handleReceiveMessage);
           return () => {
-            console.log("Component unmounted. Removing event listener.");
             socket.current.off("msg-receive", handleReceiveMessage);
           };
         }
@@ -124,22 +118,12 @@ const Conversations = ({socket}) => {
                         <img src={`data:image/;base64,${conversation.avatarImage}`} alt="" />
                         <div className='userConversationInfo'>
                             <span>{conversation.username}</span>
-                            {/* {console.log(conversation.lastMessage)} */}
                             <p>{conversation.lastMessage}</p>
                         </div>
                     </div>
                 )
             })}
-        </div>
-            //  {/* <div className='userConversation'>
-            // //     <img src={`data:image/svg+xml;base64,${contact.avatarImage}`} alt="" />
-            // //     <div className='userConversationInfo'>
-            // //         <span>{contact.username}</span>
-            // //         <p>Hello world!</p>
-            // //     </div>
-            // // </div>
-
-        
+        </div>        
     )
 }
 

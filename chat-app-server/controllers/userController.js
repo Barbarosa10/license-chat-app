@@ -1,19 +1,32 @@
 const User = require("../models/userModel");
 const Conversation = require("../models/conversationModel");
+const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
+const { onlineUsers } = require("../socketManager");
 
 
 module.exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
+
+    onlineUsers.get(user._id.toString())
+
+    if(onlineUsers.get(user._id.toString())){
+      return res.status(400).json({msg: "User logged from another device!", status: false});
+    }
+
     if (!user)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
+      return res.status(400).json({ msg: "Incorrect credentials", status: false });
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
-    delete user.password;
-    return res.json({ status: true, user });
+      return res.status(400).json({ msg: "Incorrect credentials", status: false });
+
+    const token = jwt.sign({ id: user._id , username: user.username, email: user.email}, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    return res.json({ status: true, token, _id: user._id, email: user.email, username: user.username, avatarImage: user.avatarImage });
   } catch (ex) {
     next(ex);
   }
@@ -21,25 +34,21 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-
     const { username, email, password, avatarImage} = req.body;
-
-    // console.log(username);
-    // console.log(email);
-    // console.log(password);
-    // console.log(avatarImage);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const usernameCheck = await User.findOne({ username });
+
     if (usernameCheck)
-      return res.json({ msg: "Username already used", status: false });
+      return res.status(400).json({ msg: "Username already used", status: false });
+
     const emailCheck = await User.findOne({ email });
     if (emailCheck)
-      return res.json({ msg: "Email already used", status: false });
+      return res.status(400).json({ msg: "Email already used", status: false });
 
     if(avatarImage === undefined || avatarImage === ""){
-      return res.json({ msg: "Select a valid avatar image", status: false });
+      return res.status(400).json({ msg: "Select a valid avatar image", status: false });
     }
 
     const user = await User.create({
@@ -71,7 +80,6 @@ module.exports.getAllContacts = async (req, res, next) => {
 };
 
 module.exports.getAllConversations = async (req, res, next) => {
-  // console.log(req.params.username);
   try {
     const conversations = await Conversation.find({ 
       participants: { $in: [req.params.username] } 
@@ -88,7 +96,6 @@ module.exports.getAllConversations = async (req, res, next) => {
 };
 
 module.exports.getContact = async (req, res, next) => {
-  // console.log(req.params.username);
   try {
     const user = await User.find({ username: req.params.username  }).select([
       "avatarImage",
@@ -130,40 +137,18 @@ module.exports.updateLastMessage = async (req, res, next) => {
     };
 
     const result = await Conversation.updateOne({_id: conversationId}, updatedLastMessage)
-    // console.log(result);
     return res.json(result);
   } catch (ex) {
     next(ex);
   }
 };
 
-// module.exports.setAvatar = async (req, res, next) => {
-//   try {
-//     const userId = req.params.id;
-//     const avatarImage = req.body.image;
-//     const userData = await User.findByIdAndUpdate(
-//       userId,
-//       {
-//         isAvatarImageSet: true,
-//         avatarImage,
-//       },
-//       { new: true }
-//     );
-//     return res.json({
-//       isSet: userData.isAvatarImageSet,
-//       image: userData.avatarImage,
-//     });
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
-
-// module.exports.logOut = (req, res, next) => {
-//   try {
-//     if (!req.params.id) return res.json({ msg: "User id is required " });
-//     onlineUsers.delete(req.params.id);
-//     return res.status(200).send();
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
+module.exports.logOut = (req, res, next) => {
+  try {
+    if (!req.params.id) return res.json({ msg: "User id is required " });
+    onlineUsers.delete(req.params.id);
+    return res.status(200).send();
+  } catch (ex) {
+    next(ex);
+  }
+};

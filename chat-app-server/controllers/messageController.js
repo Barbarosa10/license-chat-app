@@ -1,25 +1,22 @@
 const Messages = require("../models/messageModel");
 const mongoose = require('mongoose');
+const axios = require('axios');
 
 
 module.exports.getMessages = async (req, res, next) => {
   try {
     const {conversationId} = req.body;
     const id = new mongoose.Types.ObjectId(conversationId);
-    // console.log(id);
     const messages = await Messages.find({
         conversationId: id,
       });
 
     messages.sort((a, b) => {
-    // Convert the timestamp strings to Date objects for comparison
     const timestampA = new Date(a.timestamp);
     const timestampB = new Date(b.timestamp);
     
-    // Compare timestamps and return the result
     return timestampA - timestampB;
     });
-    // console.log(messages);
     return res.json(messages);
   } catch (ex) {
     next(ex);
@@ -28,6 +25,9 @@ module.exports.getMessages = async (req, res, next) => {
 
 module.exports.addMessage = async (req, res, next) => {
     const {message, conversationId, sender} = req.body;
+    if(message == undefined || conversationId == undefined || sender == undefined)
+      return res.status(400).json({msg: 'Field validation error.'})
+
     const id = new mongoose.Types.ObjectId(conversationId);
     try {
       const newMessage = new Messages({
@@ -42,5 +42,23 @@ module.exports.addMessage = async (req, res, next) => {
       next(ex);
     }
   };
+
+  module.exports.processData = async (req, res, next) => {
+    const {text, videoFrame} = req.body;
+    if(text == undefined || videoFrame == undefined)
+      return res.status(400).json({msg: 'Field validation error.'})
+
+    const response = await axios.post(process.env.SENTIMENT_ANALYSIS_ROUTE, {
+      text: text,
+      videoFrame: videoFrame
+    });
+    const { image_sentiment, text_sentiment } = response.data;
+
+    if(image_sentiment == undefined || text_sentiment == undefined)
+      return res.status(400).json({msg: 'Sentiment analysis could not be processed.'})
+
+    return res.json(response.data);
+  };
+
 
 

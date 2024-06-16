@@ -1,15 +1,15 @@
-import React, { useContext, useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { sentimentAnalysisRoute, sendMessageRoute, updateConversationRoute } from "../utils/ApiRoute";
 import { useMessages } from "../context/MessageContext";
 import {useConversation} from "../context/ConversationContext";
 import {useUser} from "../context/UserContext";
 import { useChat } from "../context/ChatContext";
 import { useVideoCall } from '../context/VideoCallContext';
-import axios from "axios";
+import axios from '../utils/axiosConfig';
 import { usePopup } from '../context/PopupContext';
 
 
-const Input = ({videoRef, socket}) => {
+const Input = ({socket}) => {
     const [text, setText] = useState("");
     const { currentUser } = useUser();
     const { data } = useChat();
@@ -20,7 +20,6 @@ const Input = ({videoRef, socket}) => {
     const canvasRef = useRef();
 
     useEffect(() => {
-        // Initialize the canvasRef.current here
         canvasRef.current = document.createElement('canvas');
     }, []);
 
@@ -32,7 +31,7 @@ const Input = ({videoRef, socket}) => {
             message: text,
             chatId: data.chatId
         }
-        console.log(data_to_send);
+
         socket.current.emit("send-msg", data_to_send);
         const updatedConversation = {
             "id": data.chatId,
@@ -50,7 +49,7 @@ const Input = ({videoRef, socket}) => {
             message: text,
 
         });
-
+            
         if(myVideo.current && canvasRef.current){
             const imageCapture = new ImageCapture(myVideo.current.getVideoTracks()[0]);
             const captureFrame = async () => {
@@ -66,16 +65,18 @@ const Input = ({videoRef, socket}) => {
                     return canvas.toDataURL('image/jpeg');
                   });
 
-                  if(frameData != undefined){
-                    const response = await axios.post(sentimentAnalysisRoute, {
-                        text: text,
-                        videoFrame: frameData
-                    });
-                    const { image_sentiment, text_sentiment } = response.data;
-                    showMessage("Video sentiment: " + image_sentiment + ", Message sentiment: " + text_sentiment);
 
-                }
-                  console.log(frameData);
+                    
+                    if(frameData){
+                        const response = await axios.post(sentimentAnalysisRoute, {
+                            text: text,
+                            videoFrame: frameData
+                        });
+                        const { image_sentiment, text_sentiment } = response.data;
+                        showMessage("Video sentiment: " + image_sentiment + ", Message sentiment: " + text_sentiment);
+
+                    }
+                    
                 } catch (error) {
                   console.error('Error capturing frame:', error);
                 }
@@ -84,12 +85,6 @@ const Input = ({videoRef, socket}) => {
             await captureFrame();
 
         }
-        // else{
-        //     await axios.post(sentimentAnalysisRoute, {
-        //         text: text,
-        //         videoFrame: "aa"
-        //     });
-        // }
 
         addMessage(message.data);
 

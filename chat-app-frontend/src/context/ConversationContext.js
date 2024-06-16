@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from 'react';
-import Conversations from '../components/Conversations';
 
 const ConversationContext = createContext();
 
@@ -8,11 +7,9 @@ export const ConversationProvider = ({ children }) => {
 
   const addConversation = (conversation) => {
     setConversations((prevConversations) => {
-        // Use an empty array if prevConversations is falsy
         const existingConversations = prevConversations || [];
         console.log(existingConversations);
     
-        // Create a new array with the existing conversations and the new one
         return [...existingConversations, conversation];
       });
   };
@@ -22,7 +19,6 @@ export const ConversationProvider = ({ children }) => {
   };
 
   const updateConversation = (updatedData) => {
-    // let index = -1;
     const getAllConversations = (prevConversations) => {
         const updatedConversations = [...prevConversations];
         const index = updatedConversations.findIndex((conversation) => conversation.id === updatedData.id);

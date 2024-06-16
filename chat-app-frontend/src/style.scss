@@ -1,12 +1,16 @@
-$backgroundColor: black;
-$containerColor: #C19A6B;
-$lightContainerColor: #DAA06D;
+$backgroundColor: white;
+$containerColor: rgb(59, 63, 59);
+$lightContainerColor: rgb(55, 77, 55);
+$helloColor: rgb(21, 31, 23);
+// $helloColor: rgb(16, 24, 18);
+// $containerColor: #C19A6B;
+// $lightContainerColor: #DAA06D;
 // $containerColor: #b04d07;
 // $lightContainerColor: darkorange;
 
 html, body{
     margin: 0;
-    background-color: black;
+    background-color: white;
 }
 
 @mixin mobile{
@@ -28,14 +32,16 @@ html, body{
 }
 
 .formContainer{
-    background-color: black;
+    background-color: white;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
 
     .formWrapper{
-        background-color: $containerColor;
+        background-color: $lightContainerColor;
+        border: 3px solid;
+        border-color: black;
         padding: 20px 60px;
         border-radius: 10px;
         display: flex;
@@ -57,13 +63,14 @@ html, body{
             flex-direction: column;
             gap: 15px;
             margin-top: 10px;
+            color: black;
 
             input{
                 &::placeholder{
                     color: black;
                 }
-
-                background-color: $containerColor;
+                color: white;
+                background-color: $lightContainerColor;
                 padding: 5px;
                 border: none;
                 border-bottom: 1px solid black;
@@ -73,7 +80,7 @@ html, body{
             button{
                 border-radius: 20px;
                 background-color: black;
-                color: $containerColor;
+                color: white;
                 border: none;
                 padding: 10px;
                 font-weight: bold;
@@ -97,10 +104,10 @@ html, body{
                 font-size: 12px;
 
                 a{
-                    color: darkblue;
+                    color: lightgreen;
                 }
                 a:hover{
-                    color: blue;
+                    color: black;
                 }
             }
         }
@@ -111,7 +118,7 @@ html, body{
 }
 
 .home{
-    background-color: black;
+    background-color: white;
     height: 100svh;
     display: flex;
     align-items: center;
@@ -122,14 +129,14 @@ html, body{
         bottom: 20px;
         right: 20px;
         background-color: #ffffff;
-        border: 1px solid #cccccc;
+        border: 2px solid #070606;
         padding: 10px 20px;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       }
 
     .container{
-        border: 1px solid black;
+        border: 5px solid black;
         border-radius: 10px;
         width: 80%;
         height: 90%;
@@ -143,7 +150,7 @@ html, body{
         .sidebar{
             flex: 1;
             background-color: $lightContainerColor;
-            border-right: 2px solid black;
+            border-right: 3px solid black;
             position: relative;
 
             .navbar{
@@ -154,6 +161,7 @@ html, body{
                 height: 40px;
                 padding: 10px;
                 justify-content: space-between;
+                border-bottom: 2px solid black;
 
                 .logo{
                     font-weight: bold;
@@ -208,11 +216,11 @@ html, body{
                         font-size: 18px;
                         background-color: transparent;
                         border: none;
-                        color: black;
+                        color: white;
                         outline: none;
 
                         &::placeholder{
-                            color: black;
+                            color: white;
                         }
                     }
                 }
@@ -228,7 +236,7 @@ html, body{
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                color: black;
+                color: white;
                 cursor: pointer;
 
                 &:hover{
@@ -261,27 +269,28 @@ html, body{
 
                     p{
                         font-size: 12px;
-                        color: gray;
+                        color: rgb(192, 201, 194);
                     }
                 }
             }
         }
         .welcome{
             flex: 3;
-            color: black;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: $containerColor;
+            background-color: $helloColor;
         }
         .chat{
             flex: 3;
             
             .chatInfo{
+                color: white;
                 font-weight: bold;
                 height: 40px;
                 padding: 10px;
-                background-color: #C19A6B;
+                background-color: $containerColor;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -301,6 +310,8 @@ html, body{
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                border-bottom: 1px solid;
+                border-color: white;
 
                 .videos{
                     height: 150px;
@@ -333,7 +344,7 @@ html, body{
 
 
             .messages{
-                background-color: #f0a567;
+                background-color: $helloColor;
                 padding: 10px;
                 height: calc(100% - 360px);
                 overflow-y: auto;
@@ -380,7 +391,8 @@ html, body{
                             align-items: flex-end;
 
                             p{
-                                background-color: #DAA06D;
+                                color: white;
+                                background-color: $lightContainerColor;
                                 padding: 10px;
                                 border-radius: 10px 0px 10px 10px;
                                 max-width: max-content;
@@ -408,7 +420,9 @@ html, body{
                 }
  
                 button{
-                    border: none;
+                    color: white;
+                    border: 2px solid;
+                    border-color: black;
                     padding: 10px 15px;
                     background-color: $lightContainerColor;
                     border-radius: 10px;
@@ -424,11 +438,12 @@ html, body{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: black;
-    color: white;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
     padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid $lightContainerColor;
+    box-shadow: 0 0 10px rgba(172, 165, 165, 0.1);
     text-align: center;
 
     .button-container {

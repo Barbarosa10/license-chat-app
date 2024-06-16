@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef }  from "react";
 import {motion} from "framer-motion"
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios from '../utils/axiosConfig';
 import {useUser} from "../context/UserContext";
 
-import { allContactsRoute, allConversationsRoute, contactRoute, host } from "../utils/ApiRoute";
+import { contactRoute, host } from "../utils/ApiRoute";
 import { useChat } from "../context/ChatContext";
 import { useVideoCall } from "../context/VideoCallContext";
 
@@ -21,13 +21,11 @@ import PopupResponse from "../components/PopupResponse";
 import { usePopup } from '../context/PopupContext';
 
 
-const localhost_key = "chat-app-current-user"
-
 const Home = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useUser();
     const { chatSelected, dispatch, selectChat } = useChat();
-    const { userVideo, receivingCall, setStream, closeCamera, setMyVideo, stream, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection } = useVideoCall();
+    const { receivingCall, setStream, closeCamera, setMyVideo, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection } = useVideoCall();
     const { socketv, setSocket } = useSocket();
     const {showPopup, message} = usePopup();
 
@@ -36,7 +34,7 @@ const Home = () => {
     const [user, setUser] = useState(null);
 
 
-    const [dummyState, setDummyState] = useState(0);
+    const [ dummyState, setDummyState ] = useState(0);
     const sk = useRef();
 
     const triggerRerender = () => {
@@ -45,24 +43,15 @@ const Home = () => {
 
     useEffect(() => {
       socket.current = io(host);
-      console.log(socket);
 
       socket.current.on("open-socket", (data) => {
-        console.log(data);
         sk.current = io(host); 
-        console.log(sk);
         setSocket(sk);
 
         sk.current.emit("add-user-video", data.to);
-        console.log(socketv);
-
 
         sk.current.on("callUser", (data) => {
-          console.log("calwaser");
-          console.log(data);
           const buildUser = async() => {
-            console.log("USER:")
-            console.log(currentUser);
             if(currentUser){
               const avatarImage = await getAvatarImage(data.username);
               setUser({
@@ -80,7 +69,6 @@ const Home = () => {
               setCaller(data.from);
               setUsername(data.username);
               setCallerSignal(data.signal);
-              console.log("AUUUUUUUUUUU");
               setReceivingCall(true);
             }
           }
@@ -89,29 +77,26 @@ const Home = () => {
         socket.current.emit("socket-opened", {chatId: data.chatId, to: data.from, from: data.to});
         
       });
-      console.log(currentUser);
       if (currentUser) {
         socket.current.emit("add-user", currentUser._id);
-        console.log(socket);
       }
 
     }, [currentUser]);
 
     useEffect(() => {
 
-
+      if (localStorage.getItem('token') == undefined) {
+        navigate("/login");
+      }
       const fetchData = () => {
-        // console.log(currentUser);
-        if (!localStorage.getItem(localhost_key)) {
+        if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY) == undefined) {
           navigate("/login");
         }
         else {
           try {
-            const userData = JSON.parse(localStorage.getItem(localhost_key));
+            const userData = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
             if(currentUser != userData){
-              setCurrentUser(userData.user);
-            // console.log(currentUser);
-
+              setCurrentUser(userData);
             }
           } catch (error) {
             console.error('Error parsing user data:', error);
@@ -142,11 +127,9 @@ const Home = () => {
       setCallAccepted(true);
       setCalling(true);
       navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((stream) => {
-          console.log(stream);
           setStream(stream);
           setMyVideo(stream);
 
-          console.log(socketv);
           const peer = new Peer({
             initiator: false,
             trickle: false,
@@ -157,27 +140,21 @@ const Home = () => {
             socketv.current.emit("answerCall", { signal: data, to: caller });
           })
           peer.on("stream", (stream) => {
-            console.log("uservideooooo    ");
-            console.log(stream);
             setUserVideo(stream);
             triggerRerender();
           })
 
-          console.log(peer);
           peer.signal(callerSignal);
           
           setConnectionRef(peer);
 
           socketv.current.on("callEnded", (data) => {
-            console.log("disconnecteddddddd");
-            console.log(data);
             closeCamera();
             setStream(null);
             setCalling(false);
             destroyConnection();
           });
-    
-          console.log(user);
+
           if(user){
             selectChat();
             dispatch({ type: "CHANGE_USER", user: user });
@@ -191,14 +168,10 @@ const Home = () => {
       setReceivingCall(false);
     }
 
-
-
-
     return(
         <motion.div initial={{x: -100, opacity: 0 }} animate={{x: 0, opacity: 1 }} transition={{ duration: 1}} className="home">
             <div className="container">
               <MessageProvider>
-                {console.log(receivingCall)}
                 {receivingCall ? (
                    <CallPopup onAnswer={answerCall} onDecline={declineCall} />
                 ) : null}

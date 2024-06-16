@@ -16,16 +16,11 @@ import Peer from "simple-peer";
 const Chat = ({socket}) => {
     const { currentUser } = useUser();
     const { data } = useChat();
-    const {calling, setCalling, stream, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef, destroyConnection, closeCamera, setCallEnded} = useVideoCall();
-    // console.log(data?.user);
-    const [dummyState, setDummyState] = useState(0);
-    const { socketv, setSocket } = useSocket();
+    const { setCalling, stream, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef, destroyConnection, closeCamera, setCallEnded} = useVideoCall();
+    const [ dummyState, setDummyState] = useState(0);
+    const { setSocket } = useSocket();
     const sk = useRef();
-    // let socketv = useRef();
-    // socketv = socketvv;
-    // let peer;
 
-    // Manually trigger a re-render
     const triggerRerender = () => {
       setDummyState((prev) => prev + 1);
     };
@@ -45,20 +40,12 @@ const Chat = ({socket}) => {
         triggerRerender();
         setCalling(true);
          navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            console.log(stream);
             setStream(stream);
             setMyVideo(stream);
-            // myVideo.current.srcObject = stream;
-            console.log("YAAA");
-            console.log(stream);
-            // destroyConnection();
-            
+
             sk.current = io(host);
             setSocket(sk);
             sk.current.emit("add-user-video", currentUser._id);
-            // , {  query: {
-            //     userId: currentUser._id
-            //   }});
             
             const peer = new Peer({
                 initiator: true,
@@ -79,27 +66,21 @@ const Chat = ({socket}) => {
                 });
             });
             peer.on("stream", (stream) => { 
-                console.log("TRRRRRRTRTR");
                 setUserVideo(stream);
                 triggerRerender();
             });
             sk.current.on("callAccepted", (signal) => {
-                console.log(peer);
                 setCallAccepted(true);
                 setCallEnded(false);
                 peer.signal(signal);
                 
             });
             sk.current.on("callEnded", (data) => {
-                console.log("disconnecteddddddd");
-                console.log(data);
                 destroyConnection();
                 closeCamera();
-                // setStream(null);
                 setCalling(false);
 
               });
-            // peer.on('close', () => { console.log('peer closed'); peer.destroy(); });
     
             setConnectionRef(peer);
         })
@@ -110,18 +91,15 @@ const Chat = ({socket}) => {
     return(
         <div className='chat'>
             <div className='chatInfo'>
-                {console.log(data.user)}
                 <span>{data.user?.username}</span>
                 <div className="chatCallButton">
                     <img src={Camera} onClick={requestToOpenSocket} alt=""/>
                 </div>
             </div>
 
-            {/* <MessageProvider> */}
-                {stream && <Videos socket={socketv}/>}
-                <Messages socket={socket}/> 
-                <Input socket={socket}/>
-            {/* </MessageProvider> */}
+            {stream && <Videos/>}
+            <Messages/> 
+            <Input socket={socket}/>
         </div>
     )
 }

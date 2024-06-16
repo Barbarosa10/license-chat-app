@@ -8,10 +8,7 @@ export const SocketProvider = ({ children }) => {
 
   
   const setSocketAtInitialization = (sockett) => {
-    console.log(sockett);
     setSocket(sockett);
-    console.log(socket);
-    console.log(socketVar);
     setSocketVar(-socketVar);
   };
 
