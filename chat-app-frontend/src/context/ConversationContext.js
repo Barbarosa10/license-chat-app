@@ -25,14 +25,11 @@ export const ConversationProvider = ({ children }) => {
     
         if (index !== -1) {
           updatedConversations[index] = { ...updatedConversations[index], ...updatedData };
-          console.log("index1: " + index);
           return updatedConversations;
         }
         else{
-            console.log("index: " + index);
             addConversation(updatedData);
             console.log(conversations);
-            console.log("YASS");
             
             return null;
         }
@@ -40,7 +37,6 @@ export const ConversationProvider = ({ children }) => {
       const allConversations = getAllConversations(conversations);
 
       if(allConversations != null){
-        console.log("NULLL");
         console.log(allConversations);
         setConversations(allConversations);
       }

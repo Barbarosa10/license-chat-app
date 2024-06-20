@@ -24,7 +24,7 @@ import { usePopup } from '../context/PopupContext';
 const Home = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useUser();
-    const { chatSelected, dispatch, selectChat } = useChat();
+    const { chatSelected, dispatch, selectChat, disableChat } = useChat();
     const { receivingCall, setStream, closeCamera, setMyVideo, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection } = useVideoCall();
     const { socketv, setSocket } = useSocket();
     const {showPopup, message} = usePopup();
@@ -32,7 +32,6 @@ const Home = () => {
     const socket = useRef();
 
     const [user, setUser] = useState(null);
-
 
     const [ dummyState, setDummyState ] = useState(0);
     const sk = useRef();
@@ -93,9 +92,10 @@ const Home = () => {
           navigate("/login");
         }
         else {
+          disableChat();
           try {
             const userData = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
-            if(currentUser != userData){
+            if(currentUser !== userData){
               setCurrentUser(userData);
             }
           } catch (error) {
@@ -144,15 +144,25 @@ const Home = () => {
             triggerRerender();
           })
 
+          peer.on('close', () => {
+            closeConnection();
+          });
+
+          peer.on('error', err => {
+              console.error('Peer error:', err);
+              closeConnection();
+          });
+
           peer.signal(callerSignal);
           
           setConnectionRef(peer);
 
           socketv.current.on("callEnded", (data) => {
-            closeCamera();
-            setStream(null);
-            setCalling(false);
-            destroyConnection();
+            closeConnection();
+            // closeCamera();
+            // setStream(null);
+            // setCalling(false);
+            // destroyConnection();
           });
 
           if(user){
@@ -167,6 +177,13 @@ const Home = () => {
     const declineCall = () => {
       setReceivingCall(false);
     }
+
+    const closeConnection = () => {
+      closeCamera();
+      setStream(null);
+      setCalling(false);
+      destroyConnection();
+  };
 
     return(
         <motion.div initial={{x: -100, opacity: 0 }} animate={{x: 0, opacity: 1 }} transition={{ duration: 1}} className="home">

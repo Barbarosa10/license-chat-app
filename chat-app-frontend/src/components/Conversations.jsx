@@ -19,7 +19,7 @@ const Conversations = ({socket}) => {
 
             try{
               if(currentUser){
-                const response = await(axios.get(`${allConversationsRoute}/${currentUser.username}`));
+                const response = await axios.get(`${allConversationsRoute}/${currentUser.username}`);
                 const conversations = await Promise.all(response.data.map(async (element) => {
                   const conversation = {};
                   conversation.lastMessage = element.lastMessage;
@@ -34,8 +34,8 @@ const Conversations = ({socket}) => {
                     try {
                       const contact = await axios.get(`${contactRoute}/${participant}`);
                       if (contact.data[0]) {
-                        conversation.avatarImage = contact.data[0].avatarImage;
                         conversation._id = contact.data[0]._id;
+                        conversation.avatarImage = contact.data[0].avatarImage;
                       }
                     } catch (error) {
                       console.error('Error fetching contact data:', error);

@@ -20,7 +20,7 @@
   router.get("/allcontacts/:id", authenticateToken, getAllContacts);
   router.get("/allconversations/:username", authenticateToken, getAllConversations);
   router.get("/contact/:username", authenticateToken, getContact);
-  router.post("/logout/:id", authenticateToken, logOut);
+  router.post("/logout/:id", logOut);
   
   module.exports = router;
   

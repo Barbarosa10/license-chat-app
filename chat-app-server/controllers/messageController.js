@@ -25,7 +25,9 @@ module.exports.getMessages = async (req, res, next) => {
 
 module.exports.addMessage = async (req, res, next) => {
     const {message, conversationId, sender} = req.body;
-    if(message == undefined || conversationId == undefined || sender == undefined)
+    if(message == undefined || conversationId == undefined || sender == undefined || 
+      !message || !conversationId || !sender
+    )
       return res.status(400).json({msg: 'Field validation error.'})
 
     const id = new mongoose.Types.ObjectId(conversationId);
@@ -35,7 +37,7 @@ module.exports.addMessage = async (req, res, next) => {
         conversationId: id,
         sender
       });
-      // console.log(newConversation);
+
       const response = await newMessage.save();
       return res.json(response);
     } catch (ex) {

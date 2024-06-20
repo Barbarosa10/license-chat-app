@@ -10,21 +10,21 @@ module.exports.login = async (req, res, next) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
 
+    if (!user)
+      return res.status(400).json({ msg: "Incorrect credentials", status: false });
+
     onlineUsers.get(user._id.toString())
 
     if(onlineUsers.get(user._id.toString())){
       return res.status(400).json({msg: "User logged from another device!", status: false});
     }
 
-    if (!user)
-      return res.status(400).json({ msg: "Incorrect credentials", status: false });
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid)
       return res.status(400).json({ msg: "Incorrect credentials", status: false });
 
-    const token = jwt.sign({ id: user._id , username: user.username, email: user.email}, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id , username: user.username, email: user.email}, process.env.JWT_SECRET, { expiresIn: '200h' });
 
     return res.json({ status: true, token, _id: user._id, email: user.email, username: user.username, avatarImage: user.avatarImage });
   } catch (ex) {
@@ -102,6 +102,7 @@ module.exports.getContact = async (req, res, next) => {
       "_id",
       "username"
     ]);
+    // console.log(user);
     return res.json(user);
   } catch (ex) {
     next(ex);
@@ -149,6 +150,7 @@ module.exports.logOut = (req, res, next) => {
     onlineUsers.delete(req.params.id);
     return res.status(200).send();
   } catch (ex) {
+    console.log("AAAA");
     next(ex);
   }
 };

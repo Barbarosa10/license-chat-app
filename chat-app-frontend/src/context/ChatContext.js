@@ -30,11 +30,14 @@ import {
     const selectChat = () => {
         setChatSelected(true);
     }
+    const disableChat = () => {
+      setChatSelected(false);
+  }
   
     const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
   
     return (
-      <ChatContext.Provider value={{chatSelected, selectChat, data:state, dispatch }}>
+      <ChatContext.Provider value={{chatSelected, selectChat, disableChat, data:state, dispatch }}>
         {children}
       </ChatContext.Provider>
     );

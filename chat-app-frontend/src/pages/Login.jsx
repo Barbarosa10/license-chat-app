@@ -5,8 +5,6 @@ import axios from '../utils/axiosConfig';
 import { useNavigate} from "react-router-dom";
 import {useUser} from "../context/UserContext";
 
-import { jwtDecode} from "jwt-decode";
-
 const Login = () => {
     const { setCurrentUser } = useUser();
     const navigate = useNavigate();
@@ -52,15 +50,13 @@ const Login = () => {
 
                 if(response){
                     let data = response.data;
-                    if(data.status === false){
+                    if(data.status == false){
                         setMsg(data.msg);
-                    } else if(data.status === true){
+                    } else if(data.status == true){
                         localStorage.setItem('token', data.token);
 
                         delete data['token'];
                         delete data['status'];
-                        data.avatarImage = data.avatarImage;
-                        data.username = data.username;
                         setCurrentUser(data);
 
                         
@@ -73,7 +69,7 @@ const Login = () => {
                 }
             }catch(error){
                 console.log(error);
-                if(error.response.data.msg != undefined);
+                if(error.response.data.msg !== undefined);
                     setMsg(error.response.data.msg);
             }
         }

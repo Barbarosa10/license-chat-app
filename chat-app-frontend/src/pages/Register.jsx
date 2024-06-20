@@ -25,21 +25,6 @@ export default function Register (){
         };
       }, []);
 
-    // const handleImageChange = (e) => {
-    //     const file = e.target.files[0];
-    
-    //     if (file) {
-    //       const reader = new FileReader();
-    
-    //       reader.onload = function (e) {
-    //         const contentBase64 = e.target.result.split(',')[1];
-    //         setSelectedImage(contentBase64);
-    //       };
-    
-    //       reader.readAsDataURL(file);
-    //     }
-    //   };
-
       const handleImageChange = (e) => {
         const file = e.target.files[0];
       
@@ -59,8 +44,8 @@ export default function Register (){
               ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       
               const scaledBase64 = canvas.toDataURL('image/jpeg', 0.8); // Adjust quality as needed (0.8 is 80% quality)
-      
-              setSelectedImage(scaledBase64);
+              const contentBase64 = scaledBase64.split(',')[1];
+              setSelectedImage(contentBase64);
             };
       
             img.src = event.target.result;

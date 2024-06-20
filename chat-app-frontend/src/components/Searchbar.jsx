@@ -1,18 +1,15 @@
-import React, {useContext, useState} from 'react'
+import React, { useState } from 'react'
 import axios from '../utils/axiosConfig';
 import { allConversationsRoute, contactRoute, createConversationRoute } from "../utils/ApiRoute";
-import Conversations from './Conversations';
 import {useUser} from "../context/UserContext";
 import {useConversation} from "../context/ConversationContext";
-
-const localhost_key = "chat-app-current-user"
 
 const Searchbar = () => {
     const [username, setUsername] = useState("");
     const [user, setUser] = useState(null);
     const [err, setErr] = useState(false);
     const { currentUser} = useUser();
-    const { conversations, addConversation } = useConversation();
+    const { addConversation } = useConversation();
 
 
     const handleSearch = async () => {
@@ -42,8 +39,8 @@ const Searchbar = () => {
     const handleSelect = async () => {
         let conversationExists = false;
         try{
-            if(user.username == currentUser.username)
-                throw("Can t chat with yourself");
+            if(user.username === currentUser.username)
+                throw new Error("Can't chat with yourself");
             const response = await(axios.get(`${allConversationsRoute}/${currentUser.username}`));
             outerLoop: for (const element of response.data) {
                 for (const username of element.participants) {
@@ -77,7 +74,7 @@ const Searchbar = () => {
             else{
                 console.log("Already exists!")
             }
-        }catch(error){console.log(error);}
+        }catch(error){console.log(error.message);}
         setUser(null);
         setUsername("");
     }
