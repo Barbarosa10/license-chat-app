@@ -7,6 +7,7 @@ const _ = require("lodash");
 require('dotenv').config();
 
 const authRoutes = require("./routes/auth_users");
+const conversationRoutes = require("./routes/conversations");
 const messageRoutes = require("./routes/messages");
 const analysisRoutes = require("./routes/data_analysis");
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/sentimentanalysis", analysisRoutes);
 

@@ -27,6 +27,7 @@ yarn-error.log*
 **/images
 **/chat.txt
 **/saved_weights_sentiment_chat12.pt
+**/saved_weights_sentiment_chat1.pt
 **/test.py
 **/prepare_data.py
 **/text.py

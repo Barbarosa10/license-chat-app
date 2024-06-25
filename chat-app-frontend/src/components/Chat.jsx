@@ -69,6 +69,14 @@ const Chat = ({socket}) => {
                 setUserVideo(stream);
                 triggerRerender();
             });
+            peer.on("close", () => {
+                closeConnection();
+            });
+            peer.on("error", (err) => {
+                console.error("Peer connection error: ", err);
+                closeConnection();
+            });
+
             sk.current.on("callAccepted", (signal) => {
                 setCallAccepted(true);
                 setCallEnded(false);
@@ -76,15 +84,20 @@ const Chat = ({socket}) => {
                 
             });
             sk.current.on("callEnded", (data) => {
-                destroyConnection();
-                closeCamera();
-                setCalling(false);
+                closeConnection();
 
               });
+
+
     
             setConnectionRef(peer);
-        })
+        });
 
+        const closeConnection = () => {
+            destroyConnection();
+            closeCamera();
+            setCalling(false);
+        }
 
 	}
 

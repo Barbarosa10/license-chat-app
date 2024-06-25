@@ -159,10 +159,6 @@ const Home = () => {
 
           socketv.current.on("callEnded", (data) => {
             closeConnection();
-            // closeCamera();
-            // setStream(null);
-            // setCalling(false);
-            // destroyConnection();
           });
 
           if(user){

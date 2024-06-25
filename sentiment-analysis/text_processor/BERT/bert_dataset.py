@@ -68,7 +68,7 @@ class BertDataset():
         """
         train_text, temp_text, train_labels, temp_labels = train_test_split(self.df[self.TEXT], self.df[self.LABEL],
                                                                             random_state=self.RANDOM_STATE,
-                                                                            test_size=0.3,
+                                                                            test_size=0.4,
                                                                             stratify=self.df[self.LABEL])
 
         test_text, val_text, test_labels, val_labels = train_test_split(temp_text, temp_labels,

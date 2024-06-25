@@ -10,10 +10,8 @@ import torch
 import cv2
 import matplotlib.pyplot as plt
 
-
-
 Model = BertArchitecture(AutoModel.from_pretrained('bert-base-uncased'))
-Model.load_state_dict(torch.load('text_processor\BERT\saved_weights_sentiment_chat12.pt', map_location=torch.device('cpu')))
+Model.load_state_dict(torch.load('text_processor\BERT\saved_weights_sentiment_chat1.pt', map_location=torch.device('cpu')))
 Tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
 model = CNNArchitecture(28, 28)
@@ -62,7 +60,7 @@ def crop_face(image):
         list: List of cropped face images.
     """
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    faces = face_cascade.detectMultiScale(image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    faces = face_cascade.detectMultiScale(image, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
     cropped_faces = []
 
     for (x, y, w, h) in faces:

@@ -3,10 +3,10 @@ from transformers import AdamW
 from sklearn.metrics import classification_report
 from sklearn.utils.class_weight import compute_class_weight
 import torch
-import torch.nn as nn
 from cnn_dataset import CNNDataset
 from cnn_architecture import CNNArchitecture
 import matplotlib.pyplot as plt
+from image_processor.CNN.loss_module.loss_functions import NLLLoss
 
 class CNNTrainer:
     """
@@ -34,7 +34,9 @@ class CNNTrainer:
 
         weights = torch.tensor(class_weights, dtype=torch.float)
         weights = weights.to(self.device)
-        self.cross_entropy = nn.NLLLoss(weight=weights)
+        # self.cross_entropy = nn.NLLLoss(weight=weights)
+
+        self.criterion = NLLLoss()
 
     def calculate_accuracy(self, preds, labels):
         """
@@ -81,7 +83,7 @@ class CNNTrainer:
             total_correct += (torch.argmax(preds, axis=1) == labels).sum().item()
             total_examples += labels.size(0)
 
-            loss = self.cross_entropy(preds, labels)
+            loss = self.loss_function(preds, labels)
             total_loss += loss.item()
             loss.backward()
 
@@ -123,7 +125,7 @@ class CNNTrainer:
                 total_correct += (torch.argmax(preds, axis=1) == labels).sum().item()
                 total_examples += labels.size(0)
 
-                loss = self.cross_entropy(preds, labels)
+                loss = self.criterion(preds, labels)
                 total_loss += loss.item()
 
                 preds = preds.detach().cpu().numpy()

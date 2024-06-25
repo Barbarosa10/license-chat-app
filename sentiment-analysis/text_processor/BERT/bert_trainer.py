@@ -5,10 +5,10 @@ from sklearn.utils.class_weight import compute_class_weight
 import transformers
 from transformers import AutoModel, BertTokenizerFast
 import torch
-import torch.nn as nn
 from bert_dataset import BertDataset
 from bert_architecture import BertArchitecture
 import matplotlib.pyplot as plt
+from text_processor.BERT.loss_module.loss_functions import CrossEntropyLoss
 
 class BertTrainer:
     """
@@ -40,7 +40,9 @@ class BertTrainer:
         print(f"Class Weights: {class_weights}")
 
         weights = torch.tensor(class_weights, dtype=torch.float).to(self.device)
-        self.cross_entropy = nn.CrossEntropyLoss(weight=weights)
+        # self.cross_entropy = nn.CrossEntropyLoss(weight=weights)
+
+        self.criterion = CrossEntropyLoss()
 
     def calculate_accuracy(self, preds, labels):
         """
@@ -87,7 +89,7 @@ class BertTrainer:
             total_correct += (torch.argmax(preds, axis=1) == labels).sum().item()
             total_examples += labels.size(0)
 
-            loss = self.cross_entropy(preds, labels)
+            loss = self.criterion(preds, labels)
             total_loss += loss.item()
 
             loss.backward()
@@ -132,7 +134,7 @@ class BertTrainer:
                 total_correct += (torch.argmax(preds, axis=1) == labels).sum().item()
                 total_examples += labels.size(0)
 
-                loss = self.cross_entropy(preds, labels)
+                loss = self.criterion(preds, labels)
                 total_loss += loss.item()
 
                 preds = preds.detach().cpu().numpy()

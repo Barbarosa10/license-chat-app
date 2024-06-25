@@ -11,7 +11,7 @@ export const PopupProvider = ({ children }) => {
     setShowPopup(true);
     setTimeout(() => {
         hideMessage();
-      }, 3000);
+      }, 4000);
   };
 
   const hideMessage = () => {

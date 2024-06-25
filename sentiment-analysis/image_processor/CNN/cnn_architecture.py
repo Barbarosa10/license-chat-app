@@ -36,7 +36,6 @@ class CNNArchitecture(nn.Module):
         self.linear_layers = nn.Sequential(
             nn.Flatten(),
             nn.Linear(fcInputSize, 32),
-            # nn.Linear(fcInputSize, 2),
             nn.Linear(32, 2),
             nn.LogSoftmax(dim=1)
         )

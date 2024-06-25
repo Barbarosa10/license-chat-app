@@ -54,6 +54,7 @@ module.exports.addMessage = async (req, res, next) => {
       text: text,
       videoFrame: videoFrame
     });
+
     const { image_sentiment, text_sentiment } = response.data;
 
     if(image_sentiment == undefined || text_sentiment == undefined)
