@@ -84,11 +84,15 @@ const Input = ({socket}) => {
                 await captureFrame();
     
             }
-    
-            const conversation = await axios.post(updateConversationRoute, {
-                conversationId: data.chatId,
-                lastMessage: text
-            })
+            try{
+                const conversation = await axios.post(updateConversationRoute, {
+                    conversationId: data.chatId,
+                    lastMessage: text
+                })
+            } catch(err){
+                console.log(err);
+            }
+            
             setText("");
         }catch(error){
             console.log(error);

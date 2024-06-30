@@ -11,10 +11,10 @@ import "./style.scss"
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import { SocketProvider } from "./context/SocketContext";
 
-
 function App() {
   return (
           <BrowserRouter>
+          {/* <UserProvider> */}
             <PopupProvider>
               <SocketProvider>
                 <UserProvider>
@@ -26,8 +26,6 @@ function App() {
                             <Route path="Home" element={<Home/>}/>
                             <Route path="Login" element={<Login/>}/>
                             <Route path="Register" element={<Register/>}/>
-                            {/* <Route path="ChangePassword" element={<ChangePassword/>}/> */}
-
                         </Routes>
                       </ChatContextProvider>
                     </ConversationProvider>
@@ -35,6 +33,7 @@ function App() {
                 </UserProvider>
               </SocketProvider>
             </PopupProvider>
+            {/* </UserProvider> */}
           </BrowserRouter>
   );
 }

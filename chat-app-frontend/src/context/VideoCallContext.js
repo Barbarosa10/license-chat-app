@@ -13,6 +13,7 @@ export const VideoCallProvider = ({ children }) => {
 	const [ callEnded, setCallEnded] = useState(false);
 	const [ username, setUsername ] = useState("");
   const [ calling, setCalling ] = useState(false);
+  const [callOn, setCall] = useState(false);
   const myVideo = useRef();
 	const userVideo = useRef();
 	const connectionRef= useRef();
@@ -25,6 +26,9 @@ export const VideoCallProvider = ({ children }) => {
   };
   const setCurrentReceivingCall = (receivingCall) => {
     setReceivingCall(receivingCall);
+  };
+  const setCallOn= (callon) => {
+    setCall(callon);
   };
   const setCurrentCaller = (caller) => {
     setCaller(caller);
@@ -61,28 +65,55 @@ export const VideoCallProvider = ({ children }) => {
   };
   const destroyConnection = () => {
     if(connectionRef && connectionRef.current){
-      connectionRef.current.destroy();
-      connectionRef.current = null;
+      console.log('Destroying connection:', connectionRef.current);
+      try {
+        connectionRef.current.destroy();
+      } catch (error) {
+          console.error('Error destroying connection:', error);
+      } finally {
+          connectionRef.current = null;
+          console.log('Connection destroyed');
+      }
     }
   };
 
-  const closeCamera = () => {
-    console.log(stream);
-
-    if (stream) {
-      console.log(stream.getTracks())
+  const closeCamera = async () => {
+    if (myVideo && myVideo.current instanceof MediaStream) {
       try{
-        stream.getTracks().forEach(track => track.stop());
+        await myVideo.current.getTracks().forEach(track => track.stop());
+        myVideo.current = null;
+        myVideo = null;
+        setStream(null);
       }catch(error){
         console.log(error);
       }
-      console.log(stream.getTracks())
-      console.log(stream);
     }
+
+    if (userVideo && userVideo.current instanceof MediaStream) {
+      try{
+        await userVideo.current.getTracks().forEach(track => track.stop());
+        userVideo.current = null;
+        userVideo = null;
+        setStream(null);
+      }catch(error){
+        console.log(error);
+      }
+    }
+
+    // if (stream) {
+    //   try{
+    //     await stream.getTracks().forEach(track => track.stop());
+    //     setStream(null);
+    //   }catch(error){
+    //     console.log(error);
+    //   } finally {
+    //     console.log(stream.getTracks())
+    //   }
+    // }
   }
 
   return (
-    <VideoCallContext.Provider value={{ connectionRef, userVideo, myVideo, calling, receivingCall, callerSignal, stream, callAccepted, callEnded, caller, 
+    <VideoCallContext.Provider value={{ connectionRef, userVideo, myVideo, calling, receivingCall, callerSignal, stream, callAccepted, callEnded, caller, callOn, 
                                         closeCamera,
                                         destroyConnection,
                                         setCalling: setCurrentCalling,
@@ -97,7 +128,8 @@ export const VideoCallProvider = ({ children }) => {
                                         setCallAccepted: setCurrentCallAccepted,
                                         setIdToCall: setCurrentIdToCall,
                                         setCallEnded: setCurrentCallEnded,
-                                        setUsername: setCurrentUsername
+                                        setUsername: setCurrentUsername, 
+                                        setCallOn: setCall
                                     }}>
       {children}
     </VideoCallContext.Provider>

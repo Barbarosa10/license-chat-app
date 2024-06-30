@@ -16,7 +16,7 @@ import Peer from "simple-peer";
 const Chat = ({socket}) => {
     const { currentUser } = useUser();
     const { data } = useChat();
-    const { setCalling, stream, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef, destroyConnection, closeCamera, setCallEnded} = useVideoCall();
+    const { setCalling, stream, callOn, setStream, setMyVideo, setUserVideo, setCallAccepted, setConnectionRef, destroyConnection, closeCamera, setCallEnded, setCallOn} = useVideoCall();
     const [ dummyState, setDummyState] = useState(0);
     const { setSocket } = useSocket();
     const sk = useRef();
@@ -25,18 +25,25 @@ const Chat = ({socket}) => {
       setDummyState((prev) => prev + 1);
     };
     const requestToOpenSocket = () => {
-        const data_to_send = {
-            to: data.user._id,
-            from: currentUser._id,
-            chatId: data.chatId
+        if(!callOn){
+            setCallOn(true);
+            const data_to_send = {
+                to: data.user._id,
+                from: currentUser._id,
+                chatId: data.chatId
+            }
+            socket.current.emit("open-socket", data_to_send);
+    
+            socket.current.on("socket-opened", (data) => {
+                callUser();
+            });
         }
-        socket.current.emit("open-socket", data_to_send);
 
-        socket.current.on("socket-opened", (data) => {
-            callUser();
-        });
     }
 	const callUser = () => {
+        closeCamera();
+        destroyConnection();
+        setStream(null);
         triggerRerender();
         setCalling(true);
          navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
@@ -50,7 +57,6 @@ const Chat = ({socket}) => {
             const peer = new Peer({
                 initiator: true,
                 trickle: false,
-
                 stream: stream
             });
             peer._debug = console.log;
@@ -85,19 +91,20 @@ const Chat = ({socket}) => {
             });
             sk.current.on("callEnded", (data) => {
                 closeConnection();
-
               });
 
             setConnectionRef(peer);
         });
 
-        const closeConnection = () => {
-            destroyConnection();
-            closeCamera();
-            setCalling(false);
-        }
-
 	}
+
+    const closeConnection = () => {
+        setCallOn(false);
+        closeCamera();
+        destroyConnection();
+        setCalling(false);
+        
+    };
 
     return(
         <div className='chat'>

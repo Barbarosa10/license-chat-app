@@ -5,7 +5,6 @@ import Conversations from './Conversations';
 
 const SideBar = ({socket}) => {
 
-
     return(
         <div className='sidebar'>
             <Navbar/>

@@ -49,15 +49,23 @@ module.exports.addMessage = async (req, res, next) => {
     if(text == undefined || videoFrame == undefined)
       return res.status(400).json({msg: 'Field validation error.'})
 
-    const response = await axios.post(process.env.SENTIMENT_ANALYSIS_ROUTE, {
-      text: text,
-      videoFrame: videoFrame
-    });
+    try{
+      const response = await axios.post(process.env.SENTIMENT_ANALYSIS_ROUTE, {
+        text: text,
+        videoFrame: videoFrame
+      });
 
-    const { image_sentiment, text_sentiment } = response.data;
+      const { image_sentiment, text_sentiment } = response.data;
 
-    if(image_sentiment == undefined || text_sentiment == undefined)
-      return res.status(400).json({msg: 'Sentiment analysis could not be processed.'})
+      if(image_sentiment == undefined || text_sentiment == undefined)
+        return res.status(400).json({msg: 'Sentiment analysis could not be processed.'})
 
-    return res.json(response.data);
+      return res.json(response.data);
+    }catch(error){
+      return res.status(500).json({msg: 'Sentiment analysis server is down!'})
+    }
+
+    
+
+    
   };

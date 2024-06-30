@@ -24,7 +24,7 @@ const Home = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useUser();
     const { chatSelected, dispatch, selectChat, disableChat } = useChat();
-    const { receivingCall, setStream, closeCamera, setMyVideo, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection } = useVideoCall();
+    const { receivingCall, setStream, closeCamera, setMyVideo, caller, callerSignal, setCallAccepted, setConnectionRef, setCalling, setReceivingCall, setCaller, setUsername, setCallerSignal, setUserVideo, destroyConnection, setCallOn } = useVideoCall();
     const { socketv, setSocket } = useSocket();
     const {showPopup, message} = usePopup();
 
@@ -103,6 +103,7 @@ const Home = () => {
         }
       };
       fetchData();
+
     }, []);
 
     const getAvatarImage = async(username) => {
@@ -119,6 +120,9 @@ const Home = () => {
     }
 
     const answerCall =() =>  {
+      closeCamera();
+      destroyConnection();
+      setStream(null);
       triggerRerender();
       setCallAccepted(true);
       setCalling(true);
@@ -136,6 +140,7 @@ const Home = () => {
             socketv.current.emit("answerCall", { signal: data, to: caller });
           })
           peer.on("stream", (stream) => {
+            setCallOn(true);
             setUserVideo(stream);
             triggerRerender();
           })
@@ -170,10 +175,11 @@ const Home = () => {
     }
 
     const closeConnection = () => {
+      setCallOn(false);
       closeCamera();
-      setStream(null);
-      setCalling(false);
       destroyConnection();
+      setCalling(false);
+      
   };
 
     return(

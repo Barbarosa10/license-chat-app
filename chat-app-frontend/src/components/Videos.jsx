@@ -6,17 +6,19 @@ import { useSocket } from "../context/SocketContext";
 
 const Videos = () => {
     const { data } = useChat();
-    const {callAccepted, callEnded, stream, setStream,  myVideo, userVideo, calling, setCallEnded, destroyConnection, closeCamera, setCalling} = useVideoCall();
+    const {callAccepted, callEnded, stream, setStream,  myVideo, userVideo, calling, setCallEnded, destroyConnection, closeCamera, setCalling, setCallAccepted, setCallOn} = useVideoCall();
     const myCurrentVideo = useRef();
     const userCurrentVideo = useRef();
     const { socketv, setSocket } = useSocket();
 
     const leaveCall = () => {
-        closeCamera();
-        setCallEnded(true);
-        destroyConnection();
-        setStream(null);
-        setCalling(false);
+        console.log('Leaving call');
+        // closeCamera();
+        // destroyConnection();
+        setCallOn(false);
+        // setCallEnded(true);
+        setCallAccepted(false);
+        // setCalling(false);
 
         const data_to_send = {
             to: data.user._id,
