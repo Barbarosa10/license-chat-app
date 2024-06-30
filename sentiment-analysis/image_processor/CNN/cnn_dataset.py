@@ -9,19 +9,12 @@ from torch.utils.data import TensorDataset, DataLoader
 import cv2
 
 class CNNDataset():
-    """
-    A dataset class for loading and processing images for CNN model training and evaluation.
-    """
-
     dataset_dir = 'images/'
     label_map = {'negative': 0, 'positive': 1}
     RANDOM_STATE = 42
     img_size = 28
 
     def __init__(self):
-        """
-        Initialize the CNNDataset class by loading images and labels from the dataset directory.
-        """
         first_image = True
         no_classes = len(os.listdir(self.dataset_dir))
         for class_dir in os.listdir(self.dataset_dir):
@@ -43,12 +36,6 @@ class CNNDataset():
         self.no_images = self.images.shape[0]
 
     def split_data(self):
-        """
-        Split the dataset into training, validation, and test sets, and preprocess the images.
-        
-        Returns:
-            Tuple of tensors: train_images, val_images, test_images, train_labels, val_labels, test_labels
-        """
         train_images, temp_images, train_labels, temp_labels = train_test_split(self.images, self.labels,
                                                                                 random_state=self.RANDOM_STATE,
                                                                                 test_size=0.4)
@@ -83,9 +70,6 @@ class CNNDataset():
         return train_images, val_images, test_images, train_labels, val_labels, test_labels
 
     def prepare_dataset(self):
-        """
-        Prepare the dataset by splitting the data and creating DataLoader objects for training, validation, and test sets.
-        """
         train_images, val_images, self.test_images, self.train_labels, val_labels, self.test_labels = self.split_data()
 
         batch_size = 32

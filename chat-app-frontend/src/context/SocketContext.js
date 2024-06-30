@@ -6,7 +6,6 @@ export const SocketProvider = ({ children }) => {
   let [socket, setSocket] = useState(null);
   const [socketVar, setSocketVar] = useState(1);
 
-  
   const setSocketAtInitialization = (sockett) => {
     setSocket(sockett);
     setSocketVar(-socketVar);

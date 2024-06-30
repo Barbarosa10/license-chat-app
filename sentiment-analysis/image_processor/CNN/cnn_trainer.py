@@ -9,17 +9,10 @@ import matplotlib.pyplot as plt
 from image_processor.CNN.loss_module.loss_functions import NLLLoss
 
 class CNNTrainer:
-    """
-    A trainer class for training, validating, and testing a CNN model for image classification.
-    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     epochs = 100
     
     def __init__(self):
-        """
-        Initialize the CNNTrainer class by preparing the dataset, setting up the model,
-        optimizer, and loss function with class weights.
-        """
         self.dataset = CNNDataset()
         self.dataset.prepare_dataset()
 
@@ -39,16 +32,6 @@ class CNNTrainer:
         self.criterion = NLLLoss()
 
     def calculate_accuracy(self, preds, labels):
-        """
-        Calculate the accuracy of the predictions.
-
-        Args:
-            preds (numpy.ndarray): Predicted labels.
-            labels (torch.Tensor): True labels.
-
-        Returns:
-            float: Accuracy of the predictions.
-        """
         pred_labels = np.argmax(preds, axis=1)
         correct = (pred_labels == labels).sum().item()
         total = labels.size(0)
@@ -56,12 +39,6 @@ class CNNTrainer:
         return accuracy
 
     def train(self):
-        """
-        Train the model for one epoch.
-
-        Returns:
-            tuple: Average training loss, predictions, and training accuracy.
-        """
         total_correct = 0
         total_examples = 0
         total_loss = 0
@@ -99,12 +76,6 @@ class CNNTrainer:
         return avg_loss, total_preds, train_accuracy
 
     def evaluate(self):
-        """
-        Evaluate the model on the validation set.
-
-        Returns:
-            tuple: Average validation loss, predictions, and validation accuracy.
-        """
         total_correct = 0
         total_examples = 0
 
@@ -138,9 +109,6 @@ class CNNTrainer:
         return avg_loss, total_preds, val_accuracy
 
     def test_model(self):
-        """
-        Test the model on the test set and print the classification report.
-        """
         with torch.no_grad():
             preds = self.model(self.dataset.test_images.to(self.device))
             preds = preds.detach().cpu().numpy()
@@ -149,10 +117,6 @@ class CNNTrainer:
         print(classification_report(self.dataset.test_labels, preds, zero_division=1))
 
     def create_model(self):
-        """
-        Train and evaluate the model for a specified number of epochs,
-        and save the best model based on validation loss.
-        """
         best_valid_loss = float('inf')
 
         train_losses = []

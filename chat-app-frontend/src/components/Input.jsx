@@ -8,7 +8,6 @@ import { useVideoCall } from '../context/VideoCallContext';
 import axios from '../utils/axiosConfig';
 import { usePopup } from '../context/PopupContext';
 
-
 const Input = ({socket}) => {
     const [text, setText] = useState("");
     const { currentUser } = useUser();

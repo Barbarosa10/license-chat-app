@@ -6,7 +6,6 @@ import { useMessages } from "../context/MessageContext";
 import axios from '../utils/axiosConfig';
 import { useVideoCall } from '../context/VideoCallContext';
 
-
 const Messages = () => {
     const {calling} = useVideoCall();
     const {messages, setMessagesAtInitialization} = useMessages();

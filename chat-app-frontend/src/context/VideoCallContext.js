@@ -17,7 +17,6 @@ export const VideoCallProvider = ({ children }) => {
 	const userVideo = useRef();
 	const connectionRef= useRef();
 
-
   const setCurrentMe = (me) => {
     setMe(me);
   };
@@ -65,7 +64,6 @@ export const VideoCallProvider = ({ children }) => {
       connectionRef.current.destroy();
       connectionRef.current = null;
     }
-
   };
 
   const closeCamera = () => {

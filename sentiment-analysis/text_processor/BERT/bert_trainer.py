@@ -11,10 +11,6 @@ import matplotlib.pyplot as plt
 from text_processor.BERT.loss_module.loss_functions import CrossEntropyLoss
 
 class BertTrainer:
-    """
-    BertTrainer class handles training, evaluating, and testing a BERT model for text classification.
-    """
-    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     bert = AutoModel.from_pretrained('bert-base-uncased')
@@ -22,9 +18,6 @@ class BertTrainer:
     epochs = 100
     
     def __init__(self):
-        """
-        Initializes the BertTrainer by setting up the dataset, model, optimizer, and loss function.
-        """
         self.dataset = BertDataset(path='./chat.txt', dataset_from=0, dataset_to=20000, text='text', label='label')
         self.dataset.prepare_dataset()
 
@@ -45,16 +38,6 @@ class BertTrainer:
         self.criterion = CrossEntropyLoss()
 
     def calculate_accuracy(self, preds, labels):
-        """
-        Calculates accuracy of predictions.
-        
-        Args:
-            preds (np.array): Predictions from the model.
-            labels (torch.Tensor): Actual labels.
-            
-        Returns:
-            accuracy (float): Accuracy of the predictions.
-        """
         pred_labels = np.argmax(preds, axis=1)
         correct = (pred_labels == labels).sum().item()
         total = labels.size(0)
@@ -62,14 +45,6 @@ class BertTrainer:
         return accuracy
 
     def train(self):
-        """
-        Trains the model for one epoch.
-        
-        Returns:
-            avg_loss (float): Average loss over the training data.
-            total_preds (np.array): Predictions on the training data.
-            train_accuracy (float): Accuracy on the training data.
-        """
         total_correct = 0
         total_examples = 0
         self.model.train()
@@ -106,14 +81,6 @@ class BertTrainer:
         return avg_loss, total_preds, train_accuracy
 
     def evaluate(self):
-        """
-        Evaluates the model on the validation dataset.
-        
-        Returns:
-            avg_loss (float): Average loss over the validation data.
-            total_preds (np.array): Predictions on the validation data.
-            val_accuracy (float): Accuracy on the validation data.
-        """
         total_correct = 0
         total_examples = 0
 
@@ -147,9 +114,6 @@ class BertTrainer:
         return avg_loss, total_preds, val_accuracy
 
     def test_model(self):
-        """
-        Tests the model on the test dataset and prints the classification report.
-        """
         with torch.no_grad():
             preds = self.model(self.dataset.test_seq.to(self.device), self.dataset.test_mask.to(self.device))
             preds = preds.detach().cpu().numpy()
@@ -158,9 +122,6 @@ class BertTrainer:
         print(classification_report(self.dataset.test_y, preds, zero_division=1))
 
     def create_model(self):
-        """
-        Trains and evaluates the model over a number of epochs, saving the best model weights.
-        """
         best_valid_loss = float('inf')
 
         train_losses = []

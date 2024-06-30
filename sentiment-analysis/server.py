@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from request_processor import process_image, process_text
 
-
-
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -11,10 +9,6 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/api/process-data', methods=['POST'])
 @cross_origin()
 def process_video_frame_and_text():
-    """
-    Process the incoming POST request containing video frame and text data.
-    Returns the sentiments for both image and text.
-    """
     try:
         request_data = request.get_json()
 
@@ -28,6 +22,5 @@ def process_video_frame_and_text():
     except Exception as e:
         return jsonify({'error': str(e)})
         
-
 if __name__ == '__main__':
     app.run(debug=True, port=8001)

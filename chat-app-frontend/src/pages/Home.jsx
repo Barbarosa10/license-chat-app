@@ -20,7 +20,6 @@ import Peer from "simple-peer";
 import PopupResponse from "../components/PopupResponse";
 import { usePopup } from '../context/PopupContext';
 
-
 const Home = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useUser();
@@ -106,8 +105,6 @@ const Home = () => {
       fetchData();
     }, []);
 
-    
-
     const getAvatarImage = async(username) => {
       try {
         const contact = await axios.get(`${contactRoute}/${username}`);
@@ -120,7 +117,6 @@ const Home = () => {
         return error;
       }
     }
-
 
     const answerCall =() =>  {
       triggerRerender();
@@ -167,7 +163,6 @@ const Home = () => {
           }
           setReceivingCall(false);
       })
-
     }
   
     const declineCall = () => {
@@ -203,7 +198,6 @@ const Home = () => {
                 ) : null}
         </motion.div>
     )
-
 }
 
 export default Home

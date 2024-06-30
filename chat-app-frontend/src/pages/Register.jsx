@@ -47,15 +47,12 @@ export default function Register (){
               const contentBase64 = scaledBase64.split(',')[1];
               setSelectedImage(contentBase64);
             };
-      
             img.src = event.target.result;
           };
-      
           reader.readAsDataURL(file);
         }
       };
       
-
     const handleValidation = (username, email, password) => {
         if (username.length < 3) {
             setMsg("Username should be greater than 3 characters!")
@@ -128,10 +125,6 @@ export default function Register (){
                             <span>Add an avatar</span>
                         </label>
                         <button disabled={loading}>Sign up</button>
-
-                        
-                        
-                        
                     </form>
                     <div className="responseMessage">
                             {loading===false && msg}
@@ -140,14 +133,9 @@ export default function Register (){
 
                     <div className="linkParagraph">
                         <p>Already registered? <Link to="/login">Login</Link></p>
-
                     </div>
                 </motion.div>
             </div>
-
-
-
         </>
     )
 }
-

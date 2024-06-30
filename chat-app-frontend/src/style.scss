@@ -2,11 +2,6 @@ $backgroundColor: white;
 $containerColor: rgb(59, 63, 59);
 $lightContainerColor: rgb(55, 77, 55);
 $helloColor: rgb(21, 31, 23);
-// $helloColor: rgb(16, 24, 18);
-// $containerColor: #C19A6B;
-// $lightContainerColor: #DAA06D;
-// $containerColor: #b04d07;
-// $lightContainerColor: darkorange;
 
 html, body{
     margin: 0;
@@ -249,9 +244,7 @@ html, body{
                                 color: white;
                             }
                         }
-
                     }
-                    
                 }
                 
                 img{
@@ -304,7 +297,6 @@ html, body{
                 &.false {
                     display: none;
                 }
-
                 background-color: black;
                 height: 230px;
                 display: flex;
@@ -320,19 +312,15 @@ html, body{
                     justify-content:center;
                     padding: 20px ;
                     .user{
-                        // flex: 1;
                         padding-right: 10%;
                     }
                     .contact-user{
-                        // flex: 0;
                         padding-left: 10%;
                     }
     
                     .video{
-                        // border: 1px solid black;
                         height: 200px;
                         width: 250px;
-                        // background-color: white;
                     }
                 }
 
@@ -341,7 +329,6 @@ html, body{
                     
                 }
             }
-
 
             .messages{
                 background-color: $helloColor;

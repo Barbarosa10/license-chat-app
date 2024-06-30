@@ -40,7 +40,6 @@ export const ConversationProvider = ({ children }) => {
         console.log(allConversations);
         setConversations(allConversations);
       }
-
   };
 
   return (

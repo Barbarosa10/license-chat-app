@@ -11,7 +11,6 @@ const Searchbar = () => {
     const { currentUser} = useUser();
     const { addConversation } = useConversation();
 
-
     const handleSearch = async () => {
         const fetchContact = async () => {
             try {
@@ -98,7 +97,6 @@ const Searchbar = () => {
                     </div>
                 </div>
             )}
-
         </div>
     )
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { useChat } from "../context/ChatContext";
 import { useUser } from "../context/UserContext";
 
-
 const Message = ({message}) => {
     const { currentUser } = useUser();
     const { data } = useChat();

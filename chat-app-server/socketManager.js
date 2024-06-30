@@ -64,9 +64,7 @@ const initSocket = (server) => {
       const sendUserSocket = users.get(data.to);
       socket.to(sendUserSocket).emit("callAccepted", data.signal);
     });
-
   });
-
 };
 
 module.exports = { initSocket, onlineUsers };

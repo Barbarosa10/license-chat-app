@@ -17,4 +17,3 @@ const {
   router.get("/contact/:username", authenticateToken, getContact);
   
   module.exports = router;
-  

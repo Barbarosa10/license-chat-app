@@ -8,10 +8,6 @@ from bs4 import BeautifulSoup
 import re
 
 class BertDataset():
-    """
-    BertDataset class handles the preparation and processing of the dataset for BERT model training,
-    including loading, cleaning, tokenizing, and creating DataLoaders.
-    """
     TEXT = 'text'
     LABEL = 'label'
 
@@ -33,16 +29,6 @@ class BertDataset():
     test_y = None
 
     def __init__(self, path, dataset_from=None, dataset_to=None, text='text', label='label'):
-        """
-        Initializes the BertDataset.
-
-        Args:
-            path (str): Path to the dataset file.
-            dataset_from (int, optional): Starting index of the dataset to load. Defaults to None.
-            dataset_to (int, optional): Ending index of the dataset to load. Defaults to None.
-            text (str, optional): Column name for text data. Defaults to 'text'.
-            label (str, optional): Column name for label data. Defaults to 'label'.
-        """
         self.TEXT = text
         self.LABEL = label
 
@@ -60,12 +46,6 @@ class BertDataset():
         self.tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
     def split_data(self):
-        """
-        Splits the dataset into training, validation, and test sets.
-
-        Returns:
-            tuple: Split datasets (train_text, val_text, test_text, train_labels, val_labels, test_labels).
-        """
         train_text, temp_text, train_labels, temp_labels = train_test_split(self.df[self.TEXT], self.df[self.LABEL],
                                                                             random_state=self.RANDOM_STATE,
                                                                             test_size=0.4,
@@ -79,17 +59,6 @@ class BertDataset():
         return train_text, val_text, test_text, train_labels, val_labels, test_labels
 
     def tokenize(self, train_text, val_text, test_text):
-        """
-        Tokenizes the text data using BERT tokenizer.
-
-        Args:
-            train_text (pd.Series): Training text data.
-            val_text (pd.Series): Validation text data.
-            test_text (pd.Series): Test text data.
-
-        Returns:
-            tuple: Tokenized datasets (tokens_train, tokens_val, tokens_test).
-        """
         self.optimal_sentence_length = 25
 
         tokens_train = self.tokenizer.batch_encode_plus(train_text.tolist(),
@@ -117,17 +86,6 @@ class BertDataset():
         return tokens_train, tokens_val, tokens_test
 
     def convert_lists_to_tensors(self, tokens_train, tokens_val, tokens_test):
-        """
-        Converts tokenized text data into PyTorch tensors.
-
-        Args:
-            tokens_train (dict): Tokenized training data.
-            tokens_val (dict): Tokenized validation data.
-            tokens_test (dict): Tokenized test data.
-
-        Returns:
-            tuple: Tensors for training, validation, and test sets.
-        """
         train_seq = torch.tensor(tokens_train['input_ids'])
         train_mask = torch.tensor(tokens_train['attention_mask'])
         train_y = torch.tensor(self.train_labels.tolist())
@@ -143,12 +101,6 @@ class BertDataset():
         return train_seq, train_mask, train_y, val_seq, val_mask, val_y, test_seq, test_mask, test_y
 
     def find_optimal_sentence_length(self):
-        """
-        Finds the optimal sentence length for tokenization.
-
-        Returns:
-            int: Optimal sentence length.
-        """
         rows_length = []
         for text in self.df:
             rows_length.append(len(text))
@@ -157,15 +109,6 @@ class BertDataset():
         return int(np.percentile(arr, self.OPTIMAL_LENGTH_PERCENTILE))
 
     def clean_text(self, text):
-        """
-        Cleans the text by removing HTML tags, converting to lowercase, and removing non-alphanumeric characters.
-
-        Args:
-            text (str): Text to clean.
-
-        Returns:
-            str: Cleaned text.
-        """
         text = re.sub(r'<[^>]+>', '', text)
         text = text.lower()
         text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
@@ -173,9 +116,6 @@ class BertDataset():
         return text
 
     def prepare_dataset(self):
-        """
-        Prepares the dataset by cleaning the text, splitting the data, tokenizing, and creating DataLoaders.
-        """
         self.df[self.TEXT] = self.df[self.TEXT].apply(self.clean_text).tolist()
         print(self.df.head())
 

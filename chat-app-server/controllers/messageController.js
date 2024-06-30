@@ -2,7 +2,6 @@ const Messages = require("../models/messageModel");
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-
 module.exports.getMessages = async (req, res, next) => {
   try {
     const {conversationId} = req.body;
@@ -62,6 +61,3 @@ module.exports.addMessage = async (req, res, next) => {
 
     return res.json(response.data);
   };
-
-
-

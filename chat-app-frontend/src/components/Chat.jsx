@@ -88,8 +88,6 @@ const Chat = ({socket}) => {
 
               });
 
-
-    
             setConnectionRef(peer);
         });
 

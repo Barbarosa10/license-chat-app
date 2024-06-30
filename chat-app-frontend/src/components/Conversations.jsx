@@ -30,7 +30,6 @@ const Conversations = ({socket}) => {
                     conversation.id = element._id;
                     conversation.timestamp = element.timestamp;
         
-                  
                     try {
                       const contact = await axios.get(`${contactRoute}/${participant}`);
                       if (contact.data[0]) {
@@ -80,7 +79,6 @@ const Conversations = ({socket}) => {
                         "participants": [msg.fromUsername, currentUser.username],
                         "lastMessage": msg.message,
                         "timestamp": Date.now()
-
                     };
                     try {
                         const contact = await axios.get(`${contactRoute}/${msg.fromUsername}`);

@@ -45,7 +45,6 @@ module.exports.getContact = async (req, res, next) => {
   }
 };
 
-
 module.exports.createConversation = async (req, res, next) => {
   const {participants} = req.body;
   const lastMessage = "";
@@ -54,7 +53,7 @@ module.exports.createConversation = async (req, res, next) => {
       participants,
       lastMessage
     });
-    // console.log(newConversation);
+
     const savedConversation = await newConversation.save();
     return res.json(savedConversation);
   } catch (ex) {
