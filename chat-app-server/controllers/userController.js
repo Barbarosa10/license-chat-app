@@ -11,11 +11,9 @@ module.exports.login = async (req, res, next) => {
     if (!user)
       return res.status(400).json({ msg: "Incorrect credentials", status: false });
 
-    onlineUsers.get(user._id.toString())
-
-    if(onlineUsers.get(user._id.toString())){
-      return res.status(400).json({msg: "User logged from another device!", status: false});
-    }
+    // if(onlineUsers.get(user._id.toString())){
+    //   return res.status(400).json({msg: "User logged from another device!", status: false});
+    // }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 

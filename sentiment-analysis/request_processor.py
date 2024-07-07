@@ -49,7 +49,7 @@ def preprocess_image(image):
 
     return normalized_image
 
-def Get_sentiment_for_image(base64_encoded_image_data):
+def get_sentiment_for_image(base64_encoded_image_data):
     gray_image = base64_to_gray_image(base64_encoded_image_data)
     faces = crop_face(gray_image)
 
@@ -71,7 +71,7 @@ def Get_sentiment_for_image(base64_encoded_image_data):
 
         return predicted_label
 
-def Get_sentiment_for_text(Review):
+def get_sentiment_for_text(Review):
     if not isinstance(Review, list):
         Review = [Review]
  
@@ -93,11 +93,11 @@ def Get_sentiment_for_text(Review):
     return predicted_label
 
 def process_image(image_data):
-    sentiment = Get_sentiment_for_image(image_data)
+    sentiment = get_sentiment_for_image(image_data)
     print(f'SENTIMENT FOR IMAGE: {sentiment}')
     return sentiment
 
 def process_text(text_data):
-    sentiment = Get_sentiment_for_text(text_data)
+    sentiment = get_sentiment_for_text(text_data)
     print(f'SENTIMENT FOR TEXT: {sentiment}')
     return sentiment

@@ -35,7 +35,7 @@ class CNNArchitecture(nn.Module):
 
     def forward(self, x):
         x = self.cnn_layers(x)
-        x = x.view(x.size(0), -1)
+        # x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
 
         return x

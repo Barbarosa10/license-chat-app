@@ -126,7 +126,16 @@ const Home = () => {
       triggerRerender();
       setCallAccepted(true);
       setCalling(true);
-      navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((stream) => {
+
+      const constraints = {
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        },
+        audio: false
+      };
+
+      navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
           setStream(stream);
           setMyVideo(stream);
 

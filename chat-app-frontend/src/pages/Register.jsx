@@ -13,11 +13,11 @@ export default function Register (){
     const [selectedImage, setSelectedImage] = useState(null);
     const [msg, setMsg] = useState(null);
     
-    useEffect(() => {
-        if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-          navigate("/");
-        }
-      }, []);
+    // useEffect(() => {
+    //     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+    //       navigate("/");
+    //     }
+    //   }, []);
 
     useEffect(() => {
         return () => {
@@ -93,12 +93,12 @@ export default function Register (){
                     if(data.status === false){
                         setMsg(data.msg);
                     } else if(data.status === true){
-                        setCurrentUser(data.user);
-                        localStorage.setItem(
-                            process.env.REACT_APP_LOCALHOST_KEY,
-                            JSON.stringify(data)
-                        );
-                        navigate("/");
+                        // setCurrentUser(data.user);
+                        // localStorage.setItem(
+                        //     process.env.REACT_APP_LOCALHOST_KEY,
+                        //     JSON.stringify(data)
+                        // );
+                        navigate("/login");
                     }
                 }
             }catch(error){

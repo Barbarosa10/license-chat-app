@@ -46,7 +46,16 @@ const Chat = ({socket}) => {
         setStream(null);
         triggerRerender();
         setCalling(true);
-         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+
+        const constraints = {
+            video: {
+              width: { ideal: 1920 },
+              height: { ideal: 1080 }
+            },
+            audio: false
+          };
+
+         navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
             setStream(stream);
             setMyVideo(stream);
 

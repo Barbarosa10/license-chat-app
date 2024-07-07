@@ -63,9 +63,5 @@ module.exports.addMessage = async (req, res, next) => {
       return res.json(response.data);
     }catch(error){
       return res.status(500).json({msg: 'Sentiment analysis server is down!'})
-    }
-
-    
-
-    
+    } 
   };

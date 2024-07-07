@@ -50,6 +50,7 @@ const Input = ({socket}) => {
     
             });
             addMessage(message.data);
+            setText("");
     
             if(myVideo.current && canvasRef.current && myVideo.current.getVideoTracks()[0].readyState !== 'ended'){
                 const imageCapture = new ImageCapture(myVideo.current.getVideoTracks()[0]);
@@ -60,9 +61,16 @@ const Input = ({socket}) => {
                       const frameData = await createImageBitmap(bitmap).then((imgBitmap) => {
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
-                        canvas.width = imgBitmap.width;
-                        canvas.height = imgBitmap.height;
-                        context.drawImage(imgBitmap, 0, 0);
+
+                        const originalWidth = imgBitmap.width;
+                        const originalHeight = imgBitmap.height;
+
+                        const newWidth = 640;
+                        const newHeight = 360;
+
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+                        context.drawImage(imgBitmap, 0, 0, originalWidth, originalHeight, 0, 0, newWidth, newHeight);
                         return canvas.toDataURL('image/jpeg');
                       });
     
@@ -93,7 +101,6 @@ const Input = ({socket}) => {
                 console.log(err);
             }
             
-            setText("");
         }catch(error){
             console.log(error);
         }

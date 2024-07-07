@@ -128,6 +128,7 @@ html, body{
         padding: 10px 20px;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        // font-size: 30px;
       }
 
     .container{
@@ -306,7 +307,7 @@ html, body{
                 border-color: white;
 
                 .videos{
-                    height: 150px;
+                    height: 155px;
                     display: flex;
                     align-items: center;
                     justify-content:center;
@@ -358,6 +359,7 @@ html, body{
                         display: flex;
                         flex-direction: column;
                         gap: 10px;
+                        // font-size: 30px;
 
                         p{
                             background-color: white;
