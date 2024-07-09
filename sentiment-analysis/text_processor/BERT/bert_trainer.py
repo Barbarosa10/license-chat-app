@@ -33,7 +33,6 @@ class BertTrainer:
         print(f"Class Weights: {class_weights}")
 
         weights = torch.tensor(class_weights, dtype=torch.float).to(self.device)
-        # self.cross_entropy = nn.CrossEntropyLoss(weight=weights)
 
         self.criterion = CrossEntropyLoss()
 

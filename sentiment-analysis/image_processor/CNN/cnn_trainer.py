@@ -27,7 +27,6 @@ class CNNTrainer:
 
         weights = torch.tensor(class_weights, dtype=torch.float)
         weights = weights.to(self.device)
-        # self.cross_entropy = nn.NLLLoss(weight=weights)
 
         self.criterion = NLLLoss()
 
@@ -135,7 +134,7 @@ class CNNTrainer:
             
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                torch.save(self.model.state_dict(), 'CNN_model_8.pt')
+                torch.save(self.model.state_dict(), 'CNN_model_10.pt')
             
             train_losses.append(train_loss)
             valid_losses.append(valid_loss)
